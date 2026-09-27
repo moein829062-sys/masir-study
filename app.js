@@ -1,39 +1,376 @@
-const icons={home:'<path d="M3 11.5 12 4l9 7.5v8a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',map:'<circle cx="6" cy="18" r="2"/><circle cx="18" cy="6" r="2"/><path d="M7.5 16.5 16.5 7.5M8 6h4M6 8v4M12 18h6v-6"/>',repeat:'<path d="M20 7h-9a6 6 0 0 0-6 6v1M17 4l3 3-3 3M4 17h9a6 6 0 0 0 6-6v-1M7 20l-3-3 3-3"/>',chart:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',more:'<circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/>',message:'<path d="M20 15a4 4 0 0 1-4 4H8l-5 3 1.5-5A8 8 0 1 1 20 15z"/>',calendar:'<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/>',close:'<path d="m6 6 12 12M18 6 6 18"/>',arrow:'<path d="M19 12H5M11 18l-6-6 6-6"/>',bell:'<path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/>',play:'<path d="m8 5 11 7-11 7z"/>',book:'<path d="M4 5a3 3 0 0 1 3-2h13v16H7a3 3 0 0 0-3 2zM4 5v16M8 7h8"/>',check:'<path d="m5 12 4 4L19 6"/>',lock:'<rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>',scale:'<path d="M12 3v18M5 6h14M7 6l-4 7h8L7 6ZM17 6l-4 7h8l-4-7ZM8 21h8"/>',file:'<path d="M6 2h8l4 4v16H6zM14 2v5h5M9 13h6M9 17h6"/>',quiz:'<circle cx="12" cy="12" r="9"/><path d="M9.8 9a2.4 2.4 0 1 1 3 2.3c-.8.3-.8 1-.8 1.7M12 17h.01"/>',video:'<rect x="3" y="5" width="14" height="14" rx="2"/><path d="m17 10 4-2v8l-4-2z"/>',chevron:'<path d="m6 9 6 6 6-6"/>',spark:'<path d="m12 3 1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5zM19 16l.7 2.3L22 19l-2.3.7L19 22l-.7-2.3L16 19l2.3-.7z"/>',headset:'<path d="M4 14v-2a8 8 0 0 1 16 0v2M4 14h3v6H5a1 1 0 0 1-1-1zM20 14h-3v6h2a1 1 0 0 0 1-1zM17 20c0 1-2 2-4 2"/>',send:'<path d="m22 2-7 20-4-9-9-4zM22 2 11 13"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v6l4 2"/>'};
-document.querySelectorAll('[data-icon]').forEach(el=>{const n=el.dataset.icon;el.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icons[n]||icons.book}</svg>`});
-const app=document.getElementById('app');
-const subjects=[['حقوق مدنی','۸ فصل از ۱۲ فصل','72','#3478f6','#eaf2ff'],['حقوق تجارت','۶ فصل از ۱۰ فصل','58','#7258ee','#f0edff'],['آیین دادرسی مدنی','۵ فصل از ۹ فصل','46','#179b73','#e8f8f2'],['حقوق جزا','۷ فصل از ۱۱ فصل','64','#e38624','#fff3e4'],['آیین دادرسی کیفری','۴ فصل از ۸ فصل','39','#d8546e','#ffedf1'],['اصول فقه','۶ فصل از ۸ فصل','75','#4378a8','#eaf3fb'],['متون فقه','۳ فصل از ۷ فصل','31','#8e61a9','#f5ecfa'],['حقوق اساسی','۸ فصل از ۸ فصل','100','#15947d','#e5f7f2']];
-const chapters=Array.from({length:12},(_,i)=>({id:i+1,title:i===5?'مرور بزرگ':`فصل ${toFa(i+1)}`,sub:i===5?'فصل‌های ۱ تا ۵':''}));
-let state={route:'home',chapter:2,subject:0,part:1};
-function toFa(n){return String(n).replace(/\d/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d])}
-function course(){return JSON.parse(localStorage.getItem('masirCourse')||'null')}
-function studyProgress(){return JSON.parse(localStorage.getItem('masirProgress')||'{"unlocked":2,"completed":[1]}')}
-function saveStudyProgress(data){localStorage.setItem('masirProgress',JSON.stringify(data))}
-function setActive(route){document.querySelectorAll('[data-route]').forEach(b=>b.classList.toggle('is-active',b.dataset.route===route))}
-function header(title,subtitle){return `<header class="topbar"><div><h1>${title}</h1><p>${subtitle}</p></div><div class="header-actions"><button class="icon-button" aria-label="جستجو">${svg('map')}</button><button class="icon-button" aria-label="اعلان‌ها">${svg('bell')}</button></div></header>`}
-function svg(n){return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icons[n]}</svg>`}
-function countdown(){const c=course();let target=c?.date?new Date(c.date+'T09:00:00'):new Date(Date.now()+95*864e5);let diff=Math.max(0,target-Date.now());const d=Math.floor(diff/864e5);diff%=864e5;const h=Math.floor(diff/36e5);diff%=36e5;const m=Math.floor(diff/6e4);const s=Math.floor((diff%6e4)/1000);return [d,h,m,s].map(toFa)}
-function homeView(){const c=course();const t=countdown();return `<div class="page">${header('سلام معین، آماده‌ای؟','امروز یک قدم کوچک، تو را به قبولی نزدیک‌تر می‌کند.')}
-<section class="hero-grid"><article class="countdown-card"><div class="countdown-head"><div><small>زمان باقی‌مانده تا</small><strong>${c?.name||'آزمون وکالت ۱۴۰۵'}</strong></div><span class="tag">برنامه فعال</span></div><div class="countdown-time" id="countdown"><div class="time-unit"><b>${t[0]}</b><small>روز</small></div><div class="time-unit"><b>${t[1]}</b><small>ساعت</small></div><div class="time-unit"><b>${t[2]}</b><small>دقیقه</small></div><div class="time-unit"><b>${t[3]}</b><small>ثانیه</small></div></div><div class="countdown-foot">${svg('calendar')} برنامه براساس زمان باقی‌مانده به‌روز می‌شود</div></article>
-<article class="today-card"><h3>برنامه امروز</h3><p>سه فعالیت · حدود ۱ ساعت و ۲۰ دقیقه</p><div class="task-item"><span class="task-icon">${svg('repeat')}</span><span><strong>مرور اشخاص و محجورین</strong><small>۸ دقیقه · ۱۲ تست</small></span><button data-open-review>شروع</button></div><div class="task-item"><span class="task-icon">${svg('play')}</span><span><strong>ویدیوی شرکت‌های تجاری</strong><small>۳۵ دقیقه</small></span><button>ادامه</button></div></article></section>
+const icons = {
+  home: '<path d="M3 11.5 12 4l9 7.5v8a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
+  map: '<circle cx="6" cy="18" r="2"/><circle cx="18" cy="6" r="2"/><path d="M7.5 16.5 16.5 7.5M8 6h4M6 8v4M12 18h6v-6"/>',
+  repeat:
+    '<path d="M20 7h-9a6 6 0 0 0-6 6v1M17 4l3 3-3 3M4 17h9a6 6 0 0 0 6-6v-1M7 20l-3-3 3-3"/>',
+  chart: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+  more: '<circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/>',
+  message: '<path d="M20 15a4 4 0 0 1-4 4H8l-5 3 1.5-5A8 8 0 1 1 20 15z"/>',
+  calendar:
+    '<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/>',
+  close: '<path d="m6 6 12 12M18 6 6 18"/>',
+  arrow: '<path d="M19 12H5M11 18l-6-6 6-6"/>',
+  bell: '<path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/>',
+  play: '<path d="m8 5 11 7-11 7z"/>',
+  book: '<path d="M4 5a3 3 0 0 1 3-2h13v16H7a3 3 0 0 0-3 2zM4 5v16M8 7h8"/>',
+  check: '<path d="m5 12 4 4L19 6"/>',
+  lock: '<rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>',
+  scale: '<path d="M12 3v18M5 6h14M7 6l-4 7h8L7 6ZM17 6l-4 7h8l-4-7ZM8 21h8"/>',
+  file: '<path d="M6 2h8l4 4v16H6zM14 2v5h5M9 13h6M9 17h6"/>',
+  quiz: '<circle cx="12" cy="12" r="9"/><path d="M9.8 9a2.4 2.4 0 1 1 3 2.3c-.8.3-.8 1-.8 1.7M12 17h.01"/>',
+  video:
+    '<rect x="3" y="5" width="14" height="14" rx="2"/><path d="m17 10 4-2v8l-4-2z"/>',
+  chevron: '<path d="m6 9 6 6 6-6"/>',
+  spark:
+    '<path d="m12 3 1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5zM19 16l.7 2.3L22 19l-2.3.7L19 22l-.7-2.3L16 19l2.3-.7z"/>',
+  headset:
+    '<path d="M4 14v-2a8 8 0 0 1 16 0v2M4 14h3v6H5a1 1 0 0 1-1-1zM20 14h-3v6h2a1 1 0 0 0 1-1zM17 20c0 1-2 2-4 2"/>',
+  send: '<path d="m22 2-7 20-4-9-9-4zM22 2 11 13"/>',
+  clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v6l4 2"/>',
+};
+icons.moon = '<path d="M20 15.5A8.5 8.5 0 0 1 8.5 4 8.5 8.5 0 1 0 20 15.5Z"/>';
+icons.sun =
+  '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>';
+document.querySelectorAll("[data-icon]").forEach((el) => {
+  const n = el.dataset.icon;
+  el.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icons[n] || icons.book}</svg>`;
+});
+const app = document.getElementById("app");
+const subjects = [
+  ["حقوق مدنی", "۸ فصل از ۱۲ فصل", "72", "#3478f6", "#eaf2ff"],
+  ["حقوق تجارت", "۶ فصل از ۱۰ فصل", "58", "#7258ee", "#f0edff"],
+  ["آیین دادرسی مدنی", "۵ فصل از ۹ فصل", "46", "#179b73", "#e8f8f2"],
+  ["حقوق جزا", "۷ فصل از ۱۱ فصل", "64", "#e38624", "#fff3e4"],
+  ["آیین دادرسی کیفری", "۴ فصل از ۸ فصل", "39", "#d8546e", "#ffedf1"],
+  ["اصول فقه", "۶ فصل از ۸ فصل", "75", "#4378a8", "#eaf3fb"],
+  ["متون فقه", "۳ فصل از ۷ فصل", "31", "#8e61a9", "#f5ecfa"],
+  ["حقوق اساسی", "۸ فصل از ۸ فصل", "100", "#15947d", "#e5f7f2"],
+];
+const chapters = Array.from({ length: 12 }, (_, i) => ({
+  id: i + 1,
+  title: i === 5 ? "مرور بزرگ" : `فصل ${toFa(i + 1)}`,
+  sub: i === 5 ? "فصل‌های ۱ تا ۵" : "",
+}));
+const chapterThemes = [
+  "#3478f6",
+  "#7258ee",
+  "#179b73",
+  "#e38624",
+  "#d8546e",
+  "#2f6b9c",
+  "#8e61a9",
+  "#15947d",
+  "#d06a3d",
+  "#4b72cf",
+  "#a05b84",
+  "#47735f",
+];
+let state = { route: "home", chapter: 2, subject: 0, part: 1, step: 3 };
+function toFa(n) {
+  return String(n).replace(/\d/g, (d) => "۰۱۲۳۴۵۶۷۸۹"[d]);
+}
+function course() {
+  return JSON.parse(localStorage.getItem("masirCourse") || "null");
+}
+function studyProgress() {
+  return JSON.parse(
+    localStorage.getItem("masirProgress") || '{"unlocked":2,"completed":[1]}',
+  );
+}
+function saveStudyProgress(data) {
+  localStorage.setItem("masirProgress", JSON.stringify(data));
+}
+function setActive(route) {
+  document
+    .querySelectorAll("[data-route]")
+    .forEach((b) => b.classList.toggle("is-active", b.dataset.route === route));
+}
+function header(title, subtitle) {
+  const dark = document.body.dataset.theme === "dark";
+  return `<header class="topbar"><div><h1>${title}</h1><p>${subtitle}</p></div><div class="header-actions"><button class="icon-button theme-toggle" data-theme-toggle aria-label="${dark ? "فعال‌کردن حالت روشن" : "فعال‌کردن حالت تاریک"}">${svg(dark ? "sun" : "moon")}</button><button class="icon-button" aria-label="اعلان‌ها">${svg("bell")}</button></div></header>`;
+}
+function svg(n) {
+  return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icons[n]}</svg>`;
+}
+function countdown() {
+  const c = course();
+  let target = c?.date
+    ? new Date(c.date + "T09:00:00")
+    : new Date(Date.now() + 95 * 864e5);
+  let diff = Math.max(0, target - Date.now());
+  const d = Math.floor(diff / 864e5);
+  diff %= 864e5;
+  const h = Math.floor(diff / 36e5);
+  diff %= 36e5;
+  const m = Math.floor(diff / 6e4);
+  const s = Math.floor((diff % 6e4) / 1000);
+  return [d, h, m, s].map(toFa);
+}
+function homeView() {
+  const c = course();
+  const t = countdown();
+  return `<div class="page">${header("سلام معین، آماده‌ای؟", "امروز یک قدم کوچک، تو را به قبولی نزدیک‌تر می‌کند.")}
+<section class="hero-grid"><article class="countdown-card"><div class="countdown-head"><div><small>زمان باقی‌مانده تا</small><strong>${c?.name || "آزمون وکالت ۱۴۰۵"}</strong></div><span class="tag">برنامه فعال</span></div><div class="countdown-time" id="countdown"><div class="time-unit"><b>${t[0]}</b><small>روز</small></div><div class="time-unit"><b>${t[1]}</b><small>ساعت</small></div><div class="time-unit"><b>${t[2]}</b><small>دقیقه</small></div><div class="time-unit"><b>${t[3]}</b><small>ثانیه</small></div></div><div class="countdown-foot">${svg("calendar")} برنامه براساس زمان باقی‌مانده به‌روز می‌شود</div></article>
+<article class="today-card"><h3>برنامه امروز</h3><p>سه فعالیت · حدود ۱ ساعت و ۲۰ دقیقه</p><div class="task-item"><span class="task-icon">${svg("repeat")}</span><span><strong>مرور اشخاص و محجورین</strong><small>۸ دقیقه · ۱۲ تست</small></span><button data-open-review>شروع</button></div><div class="task-item"><span class="task-icon">${svg("play")}</span><span><strong>ویدیوی شرکت‌های تجاری</strong><small>۳۵ دقیقه</small></span><button>ادامه</button></div></article></section>
 <div class="section-head"><div><h2>نقشه راه تو</h2><p>اکنون در فصل دوم، بخش اول هستی</p></div><button class="text-link" data-route="roadmap">مشاهده کامل</button></div>${roadmap()}
-<div class="section-head"><div><h2>درس‌ها</h2><p>پیشرفت تو در هر درس</p></div></div><section class="subjects-grid">${subjectCards()}</section></div>`}
-function roadmap(){const p=studyProgress();return `<section class="roadmap-shell"><div class="roadmap">${chapters.map(c=>{const done=p.completed.includes(c.id),current=c.id===p.unlocked,locked=c.id>p.unlocked;return `<div class="chapter-node ${done?'is-done':current?'is-current':locked?'is-locked':''}"><button class="node-button" data-chapter="${c.id}" aria-label="${c.title}" ${locked?'disabled':''}>${locked?svg('lock'):done?svg('check'):toFa(c.id)}</button><div><strong>${c.title}</strong><small>${done?'تکمیل شده':current?'مرحله فعلی':locked?'پس از تکمیل فصل قبل باز می‌شود':c.sub}</small></div></div>`}).join('')}</div></section>`}
-function subjectCards(){return subjects.map((s,i)=>`<button class="subject-card" data-subject="${i}" style="--subject:${s[3]};--subject-soft:${s[4]};--progress:${s[2]}%"><div class="subject-top"><span class="subject-icon">${svg('scale')}</span><span class="percent">${toFa(s[2])}٪</span></div><h3>${s[0]}</h3><p>${s[1]}</p><div class="progress-bar"><i></i></div></button>`).join('')}
-function roadmapView(){const p=studyProgress();return `<div class="page">${header('نقشه راه مطالعه','۱۲ فصل هدفمند؛ فصل‌ها را به‌ترتیب پیش ببر.')}<div class="section-head"><div><h2>مسیر آمادگی آزمون</h2><p>فصل ${toFa(p.unlocked)} فعال است · فصل ششم مرور جامع فصل‌های ۱ تا ۵ است</p></div></div>${roadmap()}<div class="section-head"><div><h2>درس‌های فصل ${toFa(state.chapter)}</h2><p>برای دیدن قدم‌ها یک درس را انتخاب کن</p></div></div><section class="subjects-grid">${subjectCards()}</section></div>`}
-function courseView(){const s=subjects[state.subject],p=studyProgress(),done=p.completed.includes(state.chapter);return `<div class="page"><div class="course-header"><button class="back-button" data-route="roadmap" aria-label="بازگشت">${svg('arrow')}</button><div><h1>${s[0]}</h1><p>فصل ${toFa(state.chapter)} · برنامه شخصی تو</p></div></div><section class="chapter-summary"><div><p class="eyebrow">${done?'تکمیل شده':'در حال مطالعه'}</p><h2>${state.chapter===6?'مرور جامع فصل‌های ۱ تا ۵':'مبانی و مفاهیم کلیدی'}</h2><p>قدم‌ها را به‌ترتیب کامل کن. مرور فردای هر قدم به شکل خودکار به برنامه روزانه اضافه می‌شود.</p></div><div class="summary-progress"><strong>${done?'۱۰۰٪':'۴۲٪'}</strong></div></section><div class="tabs"><button class="tab ${state.part===1?'is-active':''}" data-part="1">بخش اول</button>${![1,7].includes(state.chapter)?`<button class="tab ${state.part===2?'is-active':''}" data-part="2">بخش دوم ${state.part===1?svg('lock'):''}</button>`:''}</div><section class="lesson-layout"><nav class="lesson-nav">${subjects.slice(0,6).map((x,i)=>`<button class="${i===state.subject?'is-active':''}" data-subject="${i}"><span>${toFa(i+1)}</span>${x[0]}</button>`).join('')}</nav><div class="steps-list">${steps()}<div class="unlock-card ${done?'is-complete':''}"><span class="unlock-icon">${svg(done?'check':'lock')}</span><div><strong>${done?'این فصل تکمیل شده است':'آماده رفتن به فصل بعدی هستی؟'}</strong><p>${done?`فصل ${toFa(Math.min(12,state.chapter+1))} برای تو باز شده است.`:'پس از مرور و تست‌خوانی، پایان فصل را ثبت کن.'}</p></div>${!done?`<button class="primary-button" data-complete-chapter>ثبت پایان فصل و بازکردن فصل ${toFa(Math.min(12,state.chapter+1))}</button>`:''}</div></div></section></div>`}
-function steps(){const titles=['آشنایی و چارچوب مبحث','تعاریف و ارکان اصلی','تحلیل مواد قانونی','نکات آزمونی و استثناها','حل مثال‌های کاربردی','ویدیوی تکمیلی','PDF جمع‌بندی','ارزیابی میان‌مرحله‌ای','مرور نهایی','تست‌خوانی'];return titles.map((t,i)=>{const special=i>7;return `<article class="step-card ${special?'checkpoint':''} ${i===0?'is-open':''}"><button class="step-head" data-step><span class="step-number">${toFa(i+1)}</span><span><strong>${t}</strong><small>${special?(i===8?'تثبیت و بازیابی فعال':'تحلیل تست‌های پرتکرار'):'ویدئو، جزوه و تمرین'}</small></span><span class="step-status">${i<2?'انجام شده':i===2?'در حال انجام':'آماده'}</span>${svg('chevron').replace('<svg','<svg class="step-chevron"')}</button><div class="step-content">${resources(i)}</div></article>`}).join('')}
-function resources(i){if(i===9)return resource('quiz','مجموعه تست تحلیلی','۲۴ تست · پاسخ تشریحی')+resource('video','ویدیوی تست‌خوانی','۱۸ دقیقه');if(i===8)return resource('repeat','مرور هوشمند این فصل','براساس نقاط ضعف تو')+resource('file','برگه خلاصه نهایی','PDF · ۱۲ صفحه');return resource('video','جلسه آموزشی اول','۲۶ دقیقه')+resource('video','جلسه آموزشی دوم',i%2?'۱۸ دقیقه':'۳۲ دقیقه')+resource('file','جزوه این مبحث','PDF · ۱۸ صفحه')+(i===3?`<div class="resource is-locked"><span class="resource-icon">${svg('lock')}</span><span><strong>آزمونک این قدم</strong><small>بعد از مشاهده ویدئو باز می‌شود</small></span></div>`:'')}
-function resource(icon,title,meta){return `<div class="resource"><span class="resource-icon">${svg(icon)}</span><span><strong>${title}</strong><small>${meta}</small></span><button>باز کردن</button></div>`}
-function simpleView(type){const d=type==='reviews'?['مرورهای امروز','سه مرور برای تثبیت یادگیری آماده است','repeat']:['گزارش پیشرفت','گزارش کامل پس از پایان اولین فصل نمایش داده می‌شود','chart'];return `<div class="page">${header(d[0],'نمای کلی برنامه شخصی تو')}<div class="empty-state"><div class="modal-symbol">${svg(d[2])}</div><h2>${d[1]}</h2><p>این بخش در نسخه بعدی با داده‌های کامل مطالعه تو تکمیل می‌شود.</p><button class="primary-button" data-route="home">بازگشت به خانه</button></div></div>`}
-function render(){setActive(state.route);app.innerHTML=state.route==='home'?homeView():state.route==='roadmap'?roadmapView():state.route==='course'?courseView():simpleView(state.route);app.focus({preventScroll:true});bindDynamic()}
-function bindDynamic(){document.querySelectorAll('[data-route]').forEach(b=>b.onclick=()=>{state.route=b.dataset.route;if(state.route==='roadmap')state.chapter=studyProgress().unlocked;render()});document.querySelectorAll('[data-subject]').forEach(b=>b.onclick=()=>{state.subject=+b.dataset.subject;state.route='course';render()});document.querySelectorAll('[data-chapter]').forEach(b=>b.onclick=()=>{const n=+b.dataset.chapter;if(n<=studyProgress().unlocked){state.chapter=n;state.route='roadmap';render()}});document.querySelectorAll('[data-part]').forEach(b=>b.onclick=()=>{state.part=+b.dataset.part;render()});document.querySelectorAll('[data-step]').forEach(b=>b.onclick=()=>b.closest('.step-card').classList.toggle('is-open'));document.querySelectorAll('[data-open-review]').forEach(b=>b.onclick=()=>document.getElementById('reviewDialog').showModal());document.querySelectorAll('[data-complete-chapter]').forEach(b=>b.onclick=()=>{const p=studyProgress();if(!p.completed.includes(state.chapter))p.completed.push(state.chapter);p.unlocked=Math.min(12,Math.max(p.unlocked,state.chapter+1));saveStudyProgress(p);render()})}
-document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>document.getElementById(b.dataset.close).close());
-document.getElementById('supportFab').onclick=()=>document.getElementById('supportDialog').showModal();
-document.getElementById('supportForm').onsubmit=e=>{e.preventDefault();const input=document.getElementById('supportInput');if(!input.value.trim())return;document.getElementById('supportMessages').insertAdjacentHTML('beforeend',`<div class="user-message">${input.value.replace(/[<>]/g,'')}</div><div class="bot-message">پیامت ثبت شد. برای راهنمایی دقیق‌تر، نام درس یا قدم موردنظرت را هم بنویس.</div>`);input.value=''};
-document.getElementById('explainPage').onclick=()=>document.getElementById('supportMessages').insertAdjacentHTML('beforeend',`<div class="bot-message">در این صفحه می‌توانی مسیر فصل‌ها، درصد پیشرفت درس‌ها و فعالیت بعدی‌ات را ببینی. هر بخش آبی قابل انتخاب است.</div>`);
-document.getElementById('setupForm').onsubmit=e=>{e.preventDefault();localStorage.setItem('masirCourse',JSON.stringify({name:document.getElementById('courseInput').value,date:document.getElementById('examDateInput').value}));document.getElementById('setupDialog').close();render()};
-document.querySelector('[data-action="start-review"]').onclick=()=>{document.getElementById('reviewDialog').close();state.route='reviews';render()};
-const defaultDate=new Date(Date.now()+95*864e5);document.getElementById('examDateInput').value=defaultDate.toISOString().slice(0,10);document.getElementById('examDateInput').min=new Date().toISOString().slice(0,10);
-document.querySelectorAll('.mobile-nav [data-route],.sidebar [data-route]').forEach(b=>b.onclick=()=>{state.route=b.dataset.route;render()});
-render();if(!course())setTimeout(()=>document.getElementById('setupDialog').showModal(),500);
-setInterval(()=>{if(state.route==='home'){const el=document.getElementById('countdown');if(el){const t=countdown();el.querySelectorAll('b').forEach((b,i)=>b.textContent=t[i])}}},1000);
+<div class="section-head"><div><h2>درس‌ها</h2><p>پیشرفت تو در هر درس</p></div></div><section class="subjects-grid">${subjectCards()}</section></div>`;
+}
+function roadmap() {
+  const p = studyProgress();
+  return `<section class="roadmap-shell"><div class="roadmap">${chapters
+    .map((c) => {
+      const done = p.completed.includes(c.id),
+        current = c.id === p.unlocked,
+        locked = c.id > p.unlocked,
+        selected = c.id === state.chapter;
+      return `<div class="chapter-node ${done ? "is-done" : current ? "is-current" : locked ? "is-locked" : ""} ${selected ? "is-selected" : ""}" style="--chapter:${chapterThemes[c.id - 1]}"><button class="node-button" data-chapter="${c.id}" aria-label="${c.title}" ${locked ? "disabled" : ""}>${locked ? svg("lock") : done ? svg("check") : toFa(c.id)}</button><div><strong>${c.title}</strong><small>${done ? "تکمیل شده" : current ? "مرحله فعلی" : locked ? "قفل" : "قابل مشاهده"}</small></div></div>`;
+    })
+    .join("")}</div></section>`;
+}
+function subjectCards() {
+  return subjects
+    .map(
+      (s, i) =>
+        `<button class="subject-card" data-subject="${i}" style="--subject:${s[3]};--subject-soft:${s[4]};--progress:${s[2]}%"><div class="subject-top"><span class="subject-icon">${svg("scale")}</span><span class="percent">${toFa(s[2])}٪</span></div><h3>${s[0]}</h3><p>${s[1]}</p><div class="progress-bar"><i></i></div></button>`,
+    )
+    .join("");
+}
+function roadmapView() {
+  const p = studyProgress();
+  return `<div class="page">${header("نقشه راه مطالعه", "۱۲ فصل هدفمند؛ فصل‌ها را به‌ترتیب پیش ببر.")}<div class="section-head"><div><h2>مسیر آمادگی آزمون</h2><p>فصل ${toFa(p.unlocked)} فعال است · فصل ششم مرور جامع فصل‌های ۱ تا ۵ است</p></div></div>${roadmap()}<div class="section-head"><div><h2>درس‌های فصل ${toFa(state.chapter)}</h2><p>برای دیدن قدم‌ها یک درس را انتخاب کن</p></div></div><section class="subjects-grid">${subjectCards()}</section></div>`;
+}
+function courseView() {
+  const s = subjects[state.subject],
+    p = studyProgress(),
+    done = p.completed.includes(state.chapter);
+  return `<div class="page"><div class="course-header"><button class="back-button" data-route="roadmap" aria-label="بازگشت">${svg("arrow")}</button><div><h1>${s[0]}</h1><p>فصل ${toFa(state.chapter)} · برنامه شخصی تو</p></div></div><section class="chapter-summary"><div><p class="eyebrow">${done ? "تکمیل شده" : "در حال مطالعه"}</p><h2>${state.chapter === 6 ? "مرور جامع فصل‌های ۱ تا ۵" : "مبانی و مفاهیم کلیدی"}</h2><p>قدم‌ها را به‌ترتیب کامل کن. مرور فردای هر قدم به شکل خودکار به برنامه روزانه اضافه می‌شود.</p></div><div class="summary-progress"><strong>${done ? "۱۰۰٪" : "۴۲٪"}</strong></div></section><div class="tabs"><button class="tab ${state.part === 1 ? "is-active" : ""}" data-part="1">بخش اول</button>${![1, 7].includes(state.chapter) ? `<button class="tab ${state.part === 2 ? "is-active" : ""}" data-part="2">بخش دوم ${state.part === 1 ? svg("lock") : ""}</button>` : ""}</div><section class="lesson-layout"><nav class="lesson-nav">${subjects
+    .slice(0, 6)
+    .map(
+      (x, i) =>
+        `<button class="${i === state.subject ? "is-active" : ""}" data-subject="${i}"><span>${toFa(i + 1)}</span>${x[0]}</button>`,
+    )
+    .join(
+      "",
+    )}</nav><div class="steps-list">${steps()}<div class="unlock-card ${done ? "is-complete" : ""}"><span class="unlock-icon">${svg(done ? "check" : "lock")}</span><div><strong>${done ? "این فصل تکمیل شده است" : "آماده رفتن به فصل بعدی هستی؟"}</strong><p>${done ? `فصل ${toFa(Math.min(12, state.chapter + 1))} برای تو باز شده است.` : "پس از مرور و تست‌خوانی، پایان فصل را ثبت کن."}</p></div>${!done ? `<button class="primary-button" data-complete-chapter>ثبت پایان فصل و بازکردن فصل ${toFa(Math.min(12, state.chapter + 1))}</button>` : ""}</div></div></section></div>`;
+}
+function steps() {
+  const titles = [
+    "آشنایی و چارچوب مبحث",
+    "تعاریف و ارکان اصلی",
+    "تحلیل مواد قانونی",
+    "نکات آزمونی و استثناها",
+    "حل مثال‌های کاربردی",
+    "ویدیوی تکمیلی",
+    "PDF جمع‌بندی",
+    "ارزیابی میان‌مرحله‌ای",
+    "مرور نهایی",
+    "تست‌خوانی",
+  ];
+  const current = state.chapter === 2 ? 3 : 1;
+  return titles
+    .map((t, i) => {
+      const number = i + 1;
+      const special = i > 7;
+      const status = number < current ? "complete" : number === current ? "current" : number === current + 1 ? "next" : "locked";
+      const label = status === "complete" ? "انجام‌شده" : status === "current" ? "قدم فعلی" : status === "next" ? "قدم بعدی" : "قفل‌شده";
+      const isOpen = state.step === number;
+      return `<article class="step-card step-${status} ${special ? "checkpoint" : ""} ${isOpen ? "is-open is-selected" : ""}"><button class="step-head" data-step="${number}" ${status === "locked" ? "disabled" : ""}><span class="step-number">${status === "complete" ? svg("check") : toFa(number)}</span><span class="step-copy"><strong>${t}</strong><small>${special ? (i === 8 ? "تثبیت و بازیابی فعال" : "تحلیل تست‌های پرتکرار") : "ویدئو، جزوه و تمرین"}</small></span><span class="step-status">${label}</span>${svg(status === "locked" ? "lock" : "chevron").replace("<svg", '<svg class="step-chevron"')}</button><div class="step-content">${resources(i)}</div></article>`;
+    })
+    .join("");
+}
+function resources(i) {
+  if (i === 9)
+    return (
+      resource("quiz", "مجموعه تست تحلیلی", "۲۴ تست · پاسخ تشریحی") +
+      resource("video", "ویدیوی تست‌خوانی", "۱۸ دقیقه")
+    );
+  if (i === 8)
+    return (
+      resource("repeat", "مرور هوشمند این فصل", "براساس نقاط ضعف تو") +
+      resource("file", "برگه خلاصه نهایی", "PDF · ۱۲ صفحه")
+    );
+  return (
+    resource("video", "جلسه آموزشی اول", "۲۶ دقیقه") +
+    resource("video", "جلسه آموزشی دوم", i % 2 ? "۱۸ دقیقه" : "۳۲ دقیقه") +
+    resource("file", "جزوه این مبحث", "PDF · ۱۸ صفحه") +
+    (i === 3
+      ? `<div class="resource is-locked"><span class="resource-icon">${svg("lock")}</span><span><strong>آزمونک این قدم</strong><small>بعد از مشاهده ویدئو باز می‌شود</small></span></div>`
+      : "")
+  );
+}
+function resource(icon, title, meta) {
+  return `<div class="resource"><span class="resource-icon">${svg(icon)}</span><span><strong>${title}</strong><small>${meta}</small></span><button>باز کردن</button></div>`;
+}
+function simpleView(type) {
+  const d =
+    type === "reviews"
+      ? ["مرورهای امروز", "سه مرور برای تثبیت یادگیری آماده است", "repeat"]
+      : [
+          "گزارش پیشرفت",
+          "گزارش کامل پس از پایان اولین فصل نمایش داده می‌شود",
+          "chart",
+        ];
+  return `<div class="page">${header(d[0], "نمای کلی برنامه شخصی تو")}<div class="empty-state"><div class="modal-symbol">${svg(d[2])}</div><h2>${d[1]}</h2><p>این بخش در نسخه بعدی با داده‌های کامل مطالعه تو تکمیل می‌شود.</p><button class="primary-button" data-route="home">بازگشت به خانه</button></div></div>`;
+}
+function render() {
+  setActive(state.route);
+  document.documentElement.style.setProperty(
+    "--chapter",
+    chapterThemes[state.chapter - 1],
+  );
+  app.innerHTML =
+    state.route === "home"
+      ? homeView()
+      : state.route === "roadmap"
+        ? roadmapView()
+        : state.route === "course"
+          ? courseView()
+          : simpleView(state.route);
+  app.focus({ preventScroll: true });
+  bindDynamic();
+}
+function bindDynamic() {
+  document.querySelectorAll("[data-route]").forEach(
+    (b) =>
+      (b.onclick = () => {
+        state.route = b.dataset.route;
+        if (state.route === "roadmap") state.chapter = studyProgress().unlocked;
+        render();
+      }),
+  );
+  document.querySelectorAll("[data-subject]").forEach(
+    (b) =>
+      (b.onclick = () => {
+        state.subject = +b.dataset.subject;
+        state.route = "course";
+        render();
+      }),
+  );
+  document.querySelectorAll("[data-chapter]").forEach(
+    (b) =>
+      (b.onclick = () => {
+        const n = +b.dataset.chapter;
+        if (n <= studyProgress().unlocked) {
+          state.chapter = n;
+          state.route = "roadmap";
+          render();
+        }
+      }),
+  );
+  document.querySelectorAll("[data-part]").forEach(
+    (b) =>
+      (b.onclick = () => {
+        state.part = +b.dataset.part;
+        render();
+      }),
+  );
+  document
+    .querySelectorAll("[data-step]")
+    .forEach(
+      (b) =>
+        (b.onclick = () => {
+          state.step = +b.dataset.step;
+          render();
+        }),
+    );
+  document.querySelectorAll("[data-theme-toggle]").forEach(
+    (b) =>
+      (b.onclick = () => {
+        const next = document.body.dataset.theme === "dark" ? "light" : "dark";
+        document.body.dataset.theme = next;
+        localStorage.setItem("masirTheme", next);
+        render();
+      }),
+  );
+  document
+    .querySelectorAll("[data-open-review]")
+    .forEach(
+      (b) =>
+        (b.onclick = () => document.getElementById("reviewDialog").showModal()),
+    );
+  document.querySelectorAll("[data-complete-chapter]").forEach(
+    (b) =>
+      (b.onclick = () => {
+        const p = studyProgress();
+        if (!p.completed.includes(state.chapter))
+          p.completed.push(state.chapter);
+        p.unlocked = Math.min(12, Math.max(p.unlocked, state.chapter + 1));
+        saveStudyProgress(p);
+        render();
+      }),
+  );
+}
+document
+  .querySelectorAll("[data-close]")
+  .forEach(
+    (b) => (b.onclick = () => document.getElementById(b.dataset.close).close()),
+  );
+document.getElementById("supportFab").onclick = () =>
+  document.getElementById("supportDialog").showModal();
+document.getElementById("supportForm").onsubmit = (e) => {
+  e.preventDefault();
+  const input = document.getElementById("supportInput");
+  if (!input.value.trim()) return;
+  document
+    .getElementById("supportMessages")
+    .insertAdjacentHTML(
+      "beforeend",
+      `<div class="user-message">${input.value.replace(/[<>]/g, "")}</div><div class="bot-message">پیامت ثبت شد. برای راهنمایی دقیق‌تر، نام درس یا قدم موردنظرت را هم بنویس.</div>`,
+    );
+  input.value = "";
+};
+document.getElementById("explainPage").onclick = () =>
+  document
+    .getElementById("supportMessages")
+    .insertAdjacentHTML(
+      "beforeend",
+      `<div class="bot-message">در این صفحه می‌توانی مسیر فصل‌ها، درصد پیشرفت درس‌ها و فعالیت بعدی‌ات را ببینی. هر بخش آبی قابل انتخاب است.</div>`,
+    );
+document.getElementById("setupForm").onsubmit = (e) => {
+  e.preventDefault();
+  localStorage.setItem(
+    "masirCourse",
+    JSON.stringify({
+      name: document.getElementById("courseInput").value,
+      date: document.getElementById("examDateInput").value,
+    }),
+  );
+  document.getElementById("setupDialog").close();
+  render();
+};
+document.querySelector('[data-action="start-review"]').onclick = () => {
+  document.getElementById("reviewDialog").close();
+  state.route = "reviews";
+  render();
+};
+const defaultDate = new Date(Date.now() + 95 * 864e5);
+document.getElementById("examDateInput").value = defaultDate
+  .toISOString()
+  .slice(0, 10);
+document.getElementById("examDateInput").min = new Date()
+  .toISOString()
+  .slice(0, 10);
+document
+  .querySelectorAll(".mobile-nav [data-route],.sidebar [data-route]")
+  .forEach(
+    (b) =>
+      (b.onclick = () => {
+        state.route = b.dataset.route;
+        render();
+      }),
+  );
+document.body.dataset.theme =
+  localStorage.getItem("masirTheme") ||
+  (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+render();
+if (!course())
+  setTimeout(() => document.getElementById("setupDialog").showModal(), 500);
+setInterval(() => {
+  if (state.route === "home") {
+    const el = document.getElementById("countdown");
+    if (el) {
+      const t = countdown();
+      el.querySelectorAll("b").forEach((b, i) => (b.textContent = t[i]));
+    }
+  }
+}, 1000);

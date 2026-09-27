@@ -49,9 +49,12 @@ const subjects = [
 ];
 const chapters = Array.from({ length: 12 }, (_, i) => ({
   id: i + 1,
-  title: i === 5 ? "مرور نیمه‌جامع اول" : i === 11 ? "مرور نیمه‌جامع دوم" : `فصل ${toFa(i + 1)}`,
-  sub: i === 5 ? "جمع‌بندی فصل‌های ۱ تا ۵" : i === 11 ? "جمع‌بندی فصل‌های ۷ تا ۱۱" : "",
+  title: i === 5 ? "مرور نیمه‌جامع اول" : i === 11 ? "مرور نیمه‌جامع دوم" : `فصل ${toFa(i < 5 ? i + 1 : i)}`,
+  sub: i === 5 ? "جمع‌بندی فصل‌های ۱ تا ۵" : i === 11 ? "جمع‌بندی فصل‌های ۶ تا ۱۰" : "",
 }));
+function chapterTitle(id) {
+  return chapters[id - 1]?.title || `فصل ${toFa(id)}`;
+}
 const subjectTopics = [
   ["اشخاص و محجورین", "اموال و مالکیت", "قراردادها", "مسئولیت مدنی"],
   ["تاجر و اعمال تجاری", "شرکت‌های تجاری", "اسناد تجاری", "ورشکستگی"],
@@ -188,9 +191,17 @@ function subjectCards() {
 function roadmapView() {
   const p = studyProgress();
   const selectedChapter = state.chapter
-    ? `<section class="chapter-reveal"><div class="section-head"><div><span class="eyebrow">فصل انتخاب‌شده</span><h2>درس‌های فصل ${toFa(state.chapter)}</h2><p>جزئیات مباحث را ببین یا مستقیم وارد قدم‌ها شو</p></div></div><section class="subjects-grid">${subjectCards()}</section></section>`
+    ? `<section class="chapter-reveal">${chapterEntryGuide()}<div class="section-head"><div><span class="eyebrow">ایستگاه انتخاب‌شده</span><h2>درس‌های ${chapterTitle(state.chapter)}</h2><p>یک درس را انتخاب کن تا مسیر مرور و قدم‌های آن باز شود</p></div></div><section class="subjects-grid">${subjectCards()}</section></section>`
     : `<section class="chapter-placeholder">${svg("map")}<div><strong>یک فصل را انتخاب کن</strong><p>تا زمانی که فصل را انتخاب نکنی، درس‌ها و قدم‌های آن نمایش داده نمی‌شوند.</p></div></section>`;
-  return `<div class="page">${header("نقشه راه مطالعه", "۱۲ ایستگاه روشن؛ فقط مرحله اکنون را دنبال کن.")}<div class="section-head"><div><h2>مسیر آمادگی آزمون</h2><p>فصل ${toFa(p.unlocked)} فعال است · فصل‌های ۶ و ۱۲ ایستگاه مرور نیمه‌جامع‌اند</p></div></div>${roadmap()}${selectedChapter}</div>`;
+  return `<div class="page">${header("نقشه راه مطالعه", "۱۰ فصل و دو ایستگاه مرور؛ فقط مرحله اکنون را دنبال کن.")}<div class="section-head"><div><h2>مسیر آمادگی آزمون</h2><p>${chapterTitle(p.unlocked)} فعال است · دو مرور نیمه‌جامع میان و پایان مسیر قرار دارند</p></div></div>${roadmap()}${selectedChapter}</div>`;
+}
+function chapterEntryGuide() {
+  const id = state.chapter;
+  if ([1, 7].includes(id))
+    return `<div class="chapter-entry-guide is-direct"><span>${svg("book")}</span><div><small>ورود مستقیم</small><strong>${chapterTitle(id)} آماده مطالعه است</strong><p>درس را انتخاب کن تا قدم‌های آن به‌ترتیب نمایش داده شوند.</p></div></div>`;
+  if ([6, 12].includes(id))
+    return `<div class="chapter-entry-guide is-review"><span>${svg("repeat")}</span><div><small>ایستگاه جمع‌بندی</small><strong>${chapterTitle(id)}</strong><p>${chapters[id - 1].sub} را در یک مسیر مرور و تست تثبیت می‌کنی.</p></div></div>`;
+  return `<div class="chapter-entry-guide"><div class="entry-stage is-active"><span>۱</span><div><small>ابتدا</small><strong>مرور ${chapterTitle(id - 1)}</strong><p>نکات درس‌های فصل قبل را مرور و تأیید کن.</p></div></div><i>${svg("arrow")}</i><div class="entry-stage"><span>۲</span><div><small>سپس</small><strong>بازشدن کامل ${chapterTitle(id)}</strong><p>محتوای تازه و قدم‌ها به‌ترتیب در دسترس قرار می‌گیرند.</p></div></div></div>`;
 }
 function courseView() {
   const s = subjects[state.subject],
@@ -362,7 +373,7 @@ function bindDynamic() {
           state.subject = 0;
           render();
         } else {
-          showToast(`برای باز شدن فصل ${toFa(n)}، ابتدا فصل ${toFa(n - 1)} را تکمیل کن.`);
+          showToast(`برای باز شدن «${chapterTitle(n)}»، ابتدا «${chapterTitle(n - 1)}» را تکمیل کن.`);
         }
       }),
   );

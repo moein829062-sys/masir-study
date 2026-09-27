@@ -109,7 +109,7 @@ function header(title, subtitle) {
 }
 function pageNavigation() {
   const routes = ["home", "roadmap", "reviews", "progress"];
-  const labels = { home: "خانه", roadmap: "نقشه راه", reviews: "مرورهای امروز", progress: "گزارش پیشرفت" };
+  const labels = { home: "خانه", roadmap: "نقشه راه", reviews: "مرور روزانه", progress: "گزارش پیشرفت" };
   const route = state.route === "course" ? "roadmap" : state.route;
   const index = routes.indexOf(route);
   const previous = state.route === "course" ? "roadmap" : routes[index - 1];
@@ -139,7 +139,7 @@ function homeView() {
   return `<div class="page">${header("سلام معین، آماده‌ای؟", "امروز یک قدم کوچک، تو را به قبولی نزدیک‌تر می‌کند.")}
 <section class="hero-grid"><article class="countdown-card"><div class="countdown-head"><div><small>زمان باقی‌مانده تا</small><strong>${c?.name || "آزمون وکالت ۱۴۰۵"}</strong></div><button class="countdown-edit" data-edit-time>${svg("clock")} تنظیم زمان</button></div><div class="countdown-time" id="countdown"><div class="time-unit"><b>${t[0]}</b><small>روز</small></div><div class="time-unit"><b>${t[1]}</b><small>ساعت</small></div><div class="time-unit"><b>${t[2]}</b><small>دقیقه</small></div><div class="time-unit"><b>${t[3]}</b><small>ثانیه</small></div></div><div class="countdown-foot">${svg("calendar")} ${c?.date ? `موعد: ${toFa(new Intl.DateTimeFormat("fa-IR", { dateStyle: "long", timeStyle: "short" }).format(new Date(`${c.date}T${c.time || "09:00"}:00`)))}` : "برنامه براساس زمان باقی‌مانده به‌روز می‌شود"}</div></article>
 <article class="today-card"><h3>برنامه امروز</h3><p>سه فعالیت · حدود ۱ ساعت و ۲۰ دقیقه</p><div class="task-item"><span class="task-icon">${svg("repeat")}</span><span><strong>مرور اشخاص و محجورین</strong><small>۸ دقیقه · ۱۲ تست</small></span><button data-open-review>شروع</button></div><div class="task-item"><span class="task-icon">${svg("play")}</span><span><strong>ویدیوی شرکت‌های تجاری</strong><small>۳۵ دقیقه</small></span><button>ادامه</button></div></article></section>
-<div class="section-head"><div><h2>پیشنهادهای امروز</h2><p>سه پیشنهاد کوتاه براساس مسیر مطالعه تو</p></div><button class="text-link" data-route="reviews">همه مرورها</button></div>${reviewSuggestionCards()}</div>`;
+<section class="daily-review-callout"><span class="daily-review-icon">${svg("repeat")}</span><div><small>مرور روزانه</small><h2>مطالب روزهای قبل را مرور کن تا یادت نرود</h2><p>مباحثی که زمان مرورشان رسیده، اینجا آماده‌اند.</p></div><button data-route="reviews">شروع مرور روزانه ${svg("arrow")}</button></section><div class="section-head"><div><h2>آماده مرور</h2><p>سه مبحث از مطالعه‌های روزهای قبل</p></div><button class="text-link" data-route="reviews">مشاهده همه</button></div>${reviewSuggestionCards()}</div>`;
 }
 
 function reviewSuggestionCards() {
@@ -276,7 +276,7 @@ function resource(icon, title, meta) {
 }
 function simpleView(type) {
   if (type === "reviews")
-    return `<div class="page">${header("مرورهای امروز", "مرورهای پیشنهادی براساس قدم‌هایی که قبلاً خوانده‌ای.")}<div class="review-page-head"><div><strong>۳ مرور آماده</strong><span>مجموع زمان پیشنهادی: ۲۹ دقیقه</span></div><div class="review-score">${svg("spark")} تثبیت امروز: ۷۸٪</div></div>${reviewSuggestionCards()}</div>`;
+    return `<div class="page">${header("مرور روزانه", "مطالب روزهای قبل را پیش از فراموشی دوباره بازیابی کن.")}<div class="review-page-head"><div><strong>۳ مبحث از روزهای قبل</strong><span>مجموع زمان پیشنهادی: ۲۹ دقیقه</span></div><div class="review-score">${svg("spark")} تثبیت امروز: ۷۸٪</div></div>${reviewSuggestionCards()}</div>`;
   return `<div class="page">${header("گزارش پیشرفت", "وضعیت هر درس را مستقل و قابل مقایسه ببین.")}<section class="progress-overview"><div><span>پیشرفت کل دوره</span><strong>۶۱٪</strong><small>۱۷٪ رشد در ۳۰ روز گذشته</small></div><div><span>فصل فعال</span><strong>۲</strong><small>مرور فصل یک</small></div><div><span>زمان مطالعه</span><strong>۴۸ ساعت</strong><small>این دوره</small></div></section><div class="section-head"><div><h2>پیشرفت درس‌ها</h2><p>درصد، فصل تکمیل‌شده و فعالیت بعدی هر درس</p></div></div><section class="subject-progress-list">${subjects.map((s) => `<article class="subject-progress" style="--subject:${s[3]};--progress:${s[2]}%"><div class="progress-title"><span class="subject-icon">${svg("scale")}</span><div><strong>${s[0]}</strong><small>${s[1]}</small></div><b>${toFa(s[2])}٪</b></div><div class="progress-bar"><i></i></div><p>فعالیت بعدی: ${+s[2] === 100 ? "مرور دوره‌ای" : "ادامه قدم فعلی"}</p></article>`).join("")}</section></div>`;
 }
 function render() {
@@ -467,7 +467,7 @@ const tourContent = {
   home: [
     [
       "مسیرهای اصلی",
-      "از این نوار بین خانه، نقشه راه، مرورهای امروز و گزارش پیشرفت جابه‌جا می‌شوی.",
+      "از این نوار بین خانه، نقشه راه، مرور روزانه و گزارش پیشرفت جابه‌جا می‌شوی.",
       "nav",
     ],
     [

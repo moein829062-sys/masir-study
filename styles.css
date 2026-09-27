@@ -411,6 +411,15 @@ main {
   color: var(--blue);
   font-weight: 600;
 }
+.daily-review-callout { display:flex; align-items:center; gap:16px; padding:20px; margin:22px 0; border:1px solid #cfe0ff; border-radius:22px; background:linear-gradient(135deg, var(--blue-soft), var(--surface)); }
+.daily-review-callout > div { flex:1; }
+.daily-review-callout small { color:var(--blue); font-weight:800; }
+.daily-review-callout h2 { margin:3px 0; font-size:1.08rem; }
+.daily-review-callout p { margin:0; color:var(--muted); font-size:.8rem; }
+.daily-review-icon { width:52px; height:52px; flex:0 0 auto; display:grid; place-items:center; border-radius:17px; background:var(--blue); color:#fff; }
+.daily-review-icon svg { width:24px; }
+.daily-review-callout button { display:flex; align-items:center; gap:8px; border:0; border-radius:13px; padding:11px 14px; background:var(--blue); color:#fff; font:inherit; font-size:.78rem; font-weight:800; }
+.daily-review-callout button svg { width:17px; }
 .page-navigation { display:flex; gap:7px; direction:rtl; }
 .page-navigation button { display:flex; align-items:center; gap:6px; min-height:40px; padding:7px 10px; border:1px solid var(--line); border-radius:12px; background:var(--surface); color:var(--ink); font:inherit; font-size:.72rem; font-weight:700; }
 .page-navigation button:hover:not(:disabled) { border-color:var(--blue); color:var(--blue); }
@@ -1183,6 +1192,9 @@ body[data-theme="dark"] .tour-top button {
   }
 }
 @media (max-width: 760px) {
+  .daily-review-callout { align-items:flex-start; flex-wrap:wrap; padding:17px; }
+  .daily-review-callout > div { min-width:calc(100% - 72px); }
+  .daily-review-callout button { width:100%; justify-content:center; }
   .topbar { align-items:flex-start; }
   .header-actions { flex-wrap:wrap; justify-content:flex-end; }
   .page-navigation { order:3; width:100%; justify-content:flex-end; }

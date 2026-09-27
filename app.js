@@ -27,6 +27,7 @@ const icons = {
     '<path d="M4 14v-2a8 8 0 0 1 16 0v2M4 14h3v6H5a1 1 0 0 1-1-1zM20 14h-3v6h2a1 1 0 0 0 1-1zM17 20c0 1-2 2-4 2"/>',
   send: '<path d="m22 2-7 20-4-9-9-4zM22 2 11 13"/>',
   clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v6l4 2"/>',
+  info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7h.01"/>',
 };
 icons.moon = '<path d="M20 15.5A8.5 8.5 0 0 1 8.5 4 8.5 8.5 0 1 0 20 15.5Z"/>';
 icons.sun =
@@ -48,9 +49,19 @@ const subjects = [
 ];
 const chapters = Array.from({ length: 12 }, (_, i) => ({
   id: i + 1,
-  title: i === 5 ? "مرور بزرگ" : `فصل ${toFa(i + 1)}`,
-  sub: i === 5 ? "فصل‌های ۱ تا ۵" : "",
+  title: i === 5 ? "مرور نیمه‌جامع اول" : i === 11 ? "مرور نیمه‌جامع دوم" : `فصل ${toFa(i + 1)}`,
+  sub: i === 5 ? "جمع‌بندی فصل‌های ۱ تا ۵" : i === 11 ? "جمع‌بندی فصل‌های ۷ تا ۱۱" : "",
 }));
+const subjectTopics = [
+  ["اشخاص و محجورین", "اموال و مالکیت", "قراردادها", "مسئولیت مدنی"],
+  ["تاجر و اعمال تجاری", "شرکت‌های تجاری", "اسناد تجاری", "ورشکستگی"],
+  ["صلاحیت دادگاه", "دادخواست", "دادرسی و رأی", "طرق شکایت"],
+  ["عناصر جرم", "مجازات‌ها", "جرایم علیه اشخاص", "جرایم علیه اموال"],
+  ["کشف و تعقیب", "تحقیقات مقدماتی", "دادگاه کیفری", "اعتراض به آرا"],
+  ["الفاظ", "اوامر و نواهی", "عام و خاص", "اصول عملیه"],
+  ["ترجمه فقهی", "قواعد استنباط", "عبارات منتخب", "تحلیل متن"],
+  ["حقوق ملت", "ساختار حکومت", "قوای سه‌گانه", "نظارت قانون اساسی"],
+];
 const chapterThemes = [
   "#3478f6",
   "#7258ee",
@@ -138,7 +149,7 @@ function roadmap() {
         current = c.id === p.unlocked,
         locked = c.id > p.unlocked,
         selected = c.id === state.chapter;
-      return `<div class="chapter-node ${done ? "is-done" : current ? "is-current" : locked ? "is-locked" : ""} ${selected ? "is-selected" : ""}" style="--chapter:${chapterThemes[c.id - 1]}"><button class="node-button" data-chapter="${c.id}" aria-label="${c.title}" ${locked ? "disabled" : ""}>${locked ? svg("lock") : done ? svg("check") : toFa(c.id)}</button><div><strong>${c.title}</strong><small>${done ? "تکمیل شده" : current ? "مرحله فعلی" : locked ? "قفل" : "قابل مشاهده"}</small></div></div>`;
+      return `<div class="chapter-node ${done ? "is-done" : current ? "is-current" : locked ? "is-locked" : ""} ${selected ? "is-selected" : ""}" style="--chapter:${chapterThemes[c.id - 1]}"><button class="node-button" data-chapter="${c.id}" aria-label="${c.title}">${locked ? svg("lock") : done ? svg("check") : toFa(c.id)}</button><div><strong>${c.title}</strong><small>${c.sub || (done ? "تکمیل شده" : current ? "مرحله فعلی" : locked ? "قفل" : "قابل مشاهده")}</small></div></div>`;
     })
     .join("")}</div></section>`;
 }
@@ -146,13 +157,13 @@ function subjectCards() {
   return subjects
     .map(
       (s, i) =>
-        `<button class="subject-card" data-subject="${i}" style="--subject:${s[3]};--subject-soft:${s[4]};--progress:${s[2]}%"><div class="subject-top"><span class="subject-icon">${svg("scale")}</span><span class="percent">${toFa(s[2])}٪</span></div><h3>${s[0]}</h3><p>${s[1]}</p><div class="progress-bar"><i></i></div></button>`,
+        `<article class="subject-card" style="--subject:${s[3]};--subject-soft:${s[4]};--progress:${s[2]}%"><div class="subject-top"><span class="subject-icon">${svg("scale")}</span><span class="percent">${toFa(s[2])}٪</span></div><h3>${s[0]}</h3><p>${s[1]}</p><div class="progress-bar"><i></i></div><div class="subject-actions"><button data-subject-info="${i}">${svg("info")} مباحث این درس</button><button data-subject="${i}">ورود به قدم‌ها</button></div></article>`,
     )
     .join("");
 }
 function roadmapView() {
   const p = studyProgress();
-  return `<div class="page">${header("نقشه راه مطالعه", "۱۲ فصل هدفمند؛ فصل‌ها را به‌ترتیب پیش ببر.")}<div class="section-head"><div><h2>مسیر آمادگی آزمون</h2><p>فصل ${toFa(p.unlocked)} فعال است · فصل ششم مرور جامع فصل‌های ۱ تا ۵ است</p></div></div>${roadmap()}<div class="section-head"><div><h2>درس‌های فصل ${toFa(state.chapter)}</h2><p>برای دیدن قدم‌ها یک درس را انتخاب کن</p></div></div><section class="subjects-grid">${subjectCards()}</section></div>`;
+  return `<div class="page">${header("نقشه راه مطالعه", "۱۲ ایستگاه روشن؛ فقط مرحله اکنون را دنبال کن.")}<div class="section-head"><div><h2>مسیر آمادگی آزمون</h2><p>فصل ${toFa(p.unlocked)} فعال است · فصل‌های ۶ و ۱۲ ایستگاه مرور نیمه‌جامع‌اند</p></div></div>${roadmap()}<div class="section-head"><div><h2>درس‌های فصل ${toFa(state.chapter)}</h2><p>جزئیات مباحث را ببین یا مستقیم وارد قدم‌ها شو</p></div></div><section class="subjects-grid">${subjectCards()}</section></div>`;
 }
 function courseView() {
   const s = subjects[state.subject],
@@ -290,7 +301,23 @@ function bindDynamic() {
       (b.onclick = () => {
         state.subject = +b.dataset.subject;
         state.route = "course";
+        const infoDialog = document.getElementById("subjectInfoDialog");
+        if (infoDialog?.open) infoDialog.close();
         render();
+      }),
+  );
+  document.querySelectorAll("[data-subject-info]").forEach(
+    (b) =>
+      (b.onclick = () => {
+        const index = +b.dataset.subjectInfo;
+        const dialog = document.getElementById("subjectInfoDialog");
+        document.getElementById("subjectInfoTitle").textContent = subjects[index][0];
+        document.getElementById("subjectInfoText").textContent = `در فصل ${toFa(state.chapter)} این چهار بخش را می‌خوانی:`;
+        document.getElementById("subjectInfoTopics").innerHTML = subjectTopics[index]
+          .map((topic, topicIndex) => `<li><span>${toFa(topicIndex + 1)}</span>${topic}</li>`)
+          .join("");
+        document.getElementById("subjectInfoStart").dataset.subject = index;
+        dialog.showModal();
       }),
   );
   document.querySelectorAll("[data-chapter]").forEach(
@@ -309,6 +336,8 @@ function bindDynamic() {
           state.subject = 0;
           state.route = "course";
           render();
+        } else {
+          showToast(`برای باز شدن فصل ${toFa(n)}، ابتدا فصل ${toFa(n - 1)} را تکمیل کن.`);
         }
       }),
   );
@@ -398,6 +427,13 @@ function bindDynamic() {
         render();
       }),
   );
+}
+function showToast(message) {
+  const toast = document.getElementById("roadmapToast");
+  toast.textContent = message;
+  toast.classList.add("is-visible");
+  clearTimeout(showToast.timer);
+  showToast.timer = setTimeout(() => toast.classList.remove("is-visible"), 3600);
 }
 document
   .querySelectorAll("[data-close]")

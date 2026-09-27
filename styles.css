@@ -411,6 +411,12 @@ main {
   color: var(--blue);
   font-weight: 600;
 }
+.page-navigation { display:flex; gap:7px; direction:rtl; }
+.page-navigation button { display:flex; align-items:center; gap:6px; min-height:40px; padding:7px 10px; border:1px solid var(--line); border-radius:12px; background:var(--surface); color:var(--ink); font:inherit; font-size:.72rem; font-weight:700; }
+.page-navigation button:hover:not(:disabled) { border-color:var(--blue); color:var(--blue); }
+.page-navigation button:disabled { opacity:.38; cursor:not-allowed; }
+.page-navigation svg { width:16px; }
+.page-navigation .next-arrow { transform:rotate(180deg); }
 .roadmap-shell {
   background: #fff;
   border-radius: 28px;
@@ -1177,6 +1183,10 @@ body[data-theme="dark"] .tour-top button {
   }
 }
 @media (max-width: 760px) {
+  .topbar { align-items:flex-start; }
+  .header-actions { flex-wrap:wrap; justify-content:flex-end; }
+  .page-navigation { order:3; width:100%; justify-content:flex-end; }
+  .page-navigation button span { max-width:92px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .header-actions .theme-toggle {
     display: grid !important;
   }

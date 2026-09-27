@@ -105,7 +105,16 @@ function setActive(route) {
 }
 function header(title, subtitle) {
   const dark = document.body.dataset.theme === "dark";
-  return `<header class="topbar"><div><h1>${title}</h1><p>${subtitle}</p></div><div class="header-actions"><button class="icon-button theme-toggle" data-theme-toggle aria-label="${dark ? "فعال‌کردن حالت روشن" : "فعال‌کردن حالت تاریک"}">${svg(dark ? "sun" : "moon")}</button><button class="icon-button" aria-label="اعلان‌ها">${svg("bell")}</button></div></header>`;
+  return `<header class="topbar"><div><h1>${title}</h1><p>${subtitle}</p></div><div class="header-actions">${pageNavigation()}<button class="icon-button theme-toggle" data-theme-toggle aria-label="${dark ? "فعال‌کردن حالت روشن" : "فعال‌کردن حالت تاریک"}">${svg(dark ? "sun" : "moon")}</button><button class="icon-button" aria-label="اعلان‌ها">${svg("bell")}</button></div></header>`;
+}
+function pageNavigation() {
+  const routes = ["home", "roadmap", "reviews", "progress"];
+  const labels = { home: "خانه", roadmap: "نقشه راه", reviews: "مرورهای امروز", progress: "گزارش پیشرفت" };
+  const route = state.route === "course" ? "roadmap" : state.route;
+  const index = routes.indexOf(route);
+  const previous = state.route === "course" ? "roadmap" : routes[index - 1];
+  const next = state.route === "course" ? "reviews" : routes[index + 1];
+  return `<nav class="page-navigation" aria-label="حرکت بین صفحه‌ها"><button data-route="${previous || route}" ${previous ? "" : "disabled"} aria-label="صفحه قبلی">${svg("arrow")}<span>${previous ? labels[previous] : "قبلی"}</span></button><button data-route="${next || route}" ${next ? "" : "disabled"} aria-label="صفحه بعدی"><span>${next ? labels[next] : "بعدی"}</span>${svg("arrow").replace("<svg", '<svg class="next-arrow"')}</button></nav>`;
 }
 function svg(n) {
   return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icons[n]}</svg>`;

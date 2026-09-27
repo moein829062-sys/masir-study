@@ -437,12 +437,15 @@ main {
 .daily-table th,.daily-table td { padding:11px 10px; border-bottom:1px solid var(--line); white-space:nowrap; }
 .daily-table tbody tr:last-child td { border-bottom:0; }
 .daily-table td:last-child { color:var(--green); font-weight:800; }
-.page-navigation { position:fixed; z-index:24; left:24px; bottom:24px; display:flex; gap:7px; direction:rtl; padding:7px; border:1px solid var(--line); border-radius:16px; background:color-mix(in srgb,var(--surface) 94%,transparent); box-shadow:0 12px 34px rgba(16,35,63,.16); backdrop-filter:blur(14px); }
-.page-navigation button { display:flex; align-items:center; gap:6px; min-height:40px; padding:7px 10px; border:1px solid var(--line); border-radius:12px; background:var(--surface); color:var(--ink); font:inherit; font-size:.72rem; font-weight:700; }
-.page-navigation button:hover:not(:disabled) { border-color:var(--blue); color:var(--blue); }
-.page-navigation button:disabled { opacity:.38; cursor:not-allowed; }
-.page-navigation svg { width:16px; }
-.page-navigation .next-arrow { transform:rotate(180deg); }
+.top-page-navigation,.bottom-page-navigation { display:flex; gap:7px; direction:rtl; }
+.top-page-navigation button,.bottom-page-navigation button { display:flex; align-items:center; justify-content:center; gap:6px; min-height:40px; border:1px solid var(--line); border-radius:12px; background:var(--surface); color:var(--ink); font:inherit; font-size:.72rem; font-weight:700; }
+.top-page-navigation button { width:40px; padding:0; }
+.bottom-page-navigation { position:fixed; z-index:24; left:24px; bottom:24px; padding:7px; border:1px solid var(--line); border-radius:16px; background:color-mix(in srgb,var(--surface) 94%,transparent); box-shadow:0 12px 34px rgba(16,35,63,.16); backdrop-filter:blur(14px); }
+.bottom-page-navigation button { padding:7px 10px; }
+.top-page-navigation button:hover:not(:disabled),.bottom-page-navigation button:hover:not(:disabled) { border-color:var(--blue); color:var(--blue); }
+.top-page-navigation button:disabled,.bottom-page-navigation button:disabled { opacity:.38; cursor:not-allowed; }
+.top-page-navigation svg,.bottom-page-navigation svg { width:16px; }
+.top-page-navigation .next-arrow,.bottom-page-navigation .next-arrow { transform:rotate(180deg); }
 .roadmap-shell {
   background: #fff;
   border-radius: 28px;
@@ -1242,9 +1245,9 @@ body[data-theme="dark"] .tour-top button {
   .daily-review-callout button { width:100%; justify-content:center; }
   .topbar { align-items:flex-start; }
   .header-actions { flex-wrap:wrap; justify-content:flex-end; }
-  .page-navigation { left:12px; right:12px; bottom:78px; width:auto; justify-content:space-between; padding:6px; border-radius:15px; }
-  .page-navigation button { flex:1; justify-content:center; min-height:38px; }
-  .page-navigation button span { max-width:92px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .bottom-page-navigation { left:12px; right:12px; bottom:78px; width:auto; justify-content:space-between; padding:6px; border-radius:15px; }
+  .bottom-page-navigation button { flex:1; min-height:38px; }
+  .bottom-page-navigation button span { max-width:92px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .header-actions .theme-toggle {
     display: grid !important;
   }

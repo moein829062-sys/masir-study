@@ -114,7 +114,9 @@ function pageNavigation() {
   const index = routes.indexOf(route);
   const previous = state.route === "course" ? "roadmap" : routes[index - 1];
   const next = state.route === "course" ? "reviews" : routes[index + 1];
-  return `<nav class="page-navigation" aria-label="حرکت بین صفحه‌ها"><button data-route="${previous || route}" ${previous ? "" : "disabled"} aria-label="صفحه قبلی">${svg("arrow")}<span>${previous ? labels[previous] : "قبلی"}</span></button><button data-route="${next || route}" ${next ? "" : "disabled"} aria-label="صفحه بعدی"><span>${next ? labels[next] : "بعدی"}</span>${svg("arrow").replace("<svg", '<svg class="next-arrow"')}</button></nav>`;
+  const previousButton = `<button data-route="${previous || route}" ${previous ? "" : "disabled"} aria-label="صفحه قبلی" title="${previous ? labels[previous] : "قبلی"}">${svg("arrow")}</button>`;
+  const nextButton = `<button data-route="${next || route}" ${next ? "" : "disabled"} aria-label="صفحه بعدی" title="${next ? labels[next] : "بعدی"}">${svg("arrow").replace("<svg", '<svg class="next-arrow"')}</button>`;
+  return `<nav class="top-page-navigation" aria-label="میانبر حرکت بین صفحه‌ها">${previousButton}${nextButton}</nav><nav class="bottom-page-navigation" aria-label="حرکت بین صفحه‌ها"><button data-route="${previous || route}" ${previous ? "" : "disabled"}>${svg("arrow")}<span>${previous ? labels[previous] : "قبلی"}</span></button><button data-route="${next || route}" ${next ? "" : "disabled"}><span>${next ? labels[next] : "بعدی"}</span>${svg("arrow").replace("<svg", '<svg class="next-arrow"')}</button></nav>`;
 }
 function svg(n) {
   return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icons[n]}</svg>`;

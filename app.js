@@ -78,7 +78,7 @@ const chapterThemes = [
 ];
 let state = {
   route: "home",
-  chapter: 2,
+  chapter: null,
   subject: 0,
   part: 1,
   step: 3,
@@ -133,12 +133,15 @@ function countdown() {
   const s = Math.floor((diff % 6e4) / 1000);
   return [d, h, m, s].map(toFa);
 }
+function overallProgress() {
+  return Math.round(subjects.reduce((sum, subject) => sum + Number(subject[2]), 0) / subjects.length);
+}
 function homeView() {
   const c = course();
   const t = countdown();
+  const progress = overallProgress();
   return `<div class="page">${header("سلام معین، آماده‌ای؟", "امروز یک قدم کوچک، تو را به قبولی نزدیک‌تر می‌کند.")}
-<section class="hero-grid"><article class="countdown-card"><div class="countdown-head"><div><small>زمان باقی‌مانده تا</small><strong>${c?.name || "آزمون وکالت ۱۴۰۵"}</strong></div><button class="countdown-edit" data-edit-time>${svg("clock")} تنظیم زمان</button></div><div class="countdown-time" id="countdown"><div class="time-unit"><b>${t[0]}</b><small>روز</small></div><div class="time-unit"><b>${t[1]}</b><small>ساعت</small></div><div class="time-unit"><b>${t[2]}</b><small>دقیقه</small></div><div class="time-unit"><b>${t[3]}</b><small>ثانیه</small></div></div><div class="countdown-foot">${svg("calendar")} ${c?.date ? `موعد: ${toFa(new Intl.DateTimeFormat("fa-IR", { dateStyle: "long", timeStyle: "short" }).format(new Date(`${c.date}T${c.time || "09:00"}:00`)))}` : "برنامه براساس زمان باقی‌مانده به‌روز می‌شود"}</div></article>
-<article class="today-card"><h3>برنامه امروز</h3><p>سه فعالیت · حدود ۱ ساعت و ۲۰ دقیقه</p><div class="task-item"><span class="task-icon">${svg("repeat")}</span><span><strong>مرور اشخاص و محجورین</strong><small>۸ دقیقه · ۱۲ تست</small></span><button data-open-review>شروع</button></div><div class="task-item"><span class="task-icon">${svg("play")}</span><span><strong>ویدیوی شرکت‌های تجاری</strong><small>۳۵ دقیقه</small></span><button>ادامه</button></div></article></section>
+<section class="hero-grid is-progress-banner"><article class="countdown-card"><div class="countdown-main"><div class="countdown-content"><div class="countdown-head"><div><small>زمان باقی‌مانده تا</small><strong>${c?.name || "آزمون وکالت ۱۴۰۵"}</strong></div><button class="countdown-edit" data-edit-time>${svg("clock")} تنظیم زمان</button></div><div class="countdown-time" id="countdown"><div class="time-unit"><b>${t[0]}</b><small>روز</small></div><div class="time-unit"><b>${t[1]}</b><small>ساعت</small></div><div class="time-unit"><b>${t[2]}</b><small>دقیقه</small></div><div class="time-unit"><b>${t[3]}</b><small>ثانیه</small></div></div><div class="countdown-foot">${svg("calendar")} ${c?.date ? `موعد: ${toFa(new Intl.DateTimeFormat("fa-IR", { dateStyle: "long", timeStyle: "short" }).format(new Date(`${c.date}T${c.time || "09:00"}:00`)))}` : "برنامه براساس زمان باقی‌مانده به‌روز می‌شود"}</div></div><div class="overall-ring" style="--overall:${progress * 3.6}deg"><div><strong>${toFa(progress)}٪</strong><small>پیشرفت کل</small></div></div></div></article></section>
 <section class="daily-review-callout"><span class="daily-review-icon">${svg("repeat")}</span><div><small>مرور روزانه</small><h2>مطالب روزهای قبل را مرور کن تا یادت نرود</h2><p>مباحثی که زمان مرورشان رسیده، اینجا آماده‌اند.</p></div><button data-route="reviews">شروع مرور روزانه ${svg("arrow")}</button></section><div class="section-head"><div><h2>آماده مرور</h2><p>سه مبحث از مطالعه‌های روزهای قبل</p></div><button class="text-link" data-route="reviews">مشاهده همه</button></div>${reviewSuggestionCards()}</div>`;
 }
 
@@ -172,7 +175,10 @@ function subjectCards() {
 }
 function roadmapView() {
   const p = studyProgress();
-  return `<div class="page">${header("نقشه راه مطالعه", "۱۲ ایستگاه روشن؛ فقط مرحله اکنون را دنبال کن.")}<div class="section-head"><div><h2>مسیر آمادگی آزمون</h2><p>فصل ${toFa(p.unlocked)} فعال است · فصل‌های ۶ و ۱۲ ایستگاه مرور نیمه‌جامع‌اند</p></div></div>${roadmap()}<div class="section-head"><div><h2>درس‌های فصل ${toFa(state.chapter)}</h2><p>جزئیات مباحث را ببین یا مستقیم وارد قدم‌ها شو</p></div></div><section class="subjects-grid">${subjectCards()}</section></div>`;
+  const selectedChapter = state.chapter
+    ? `<section class="chapter-reveal"><div class="section-head"><div><span class="eyebrow">فصل انتخاب‌شده</span><h2>درس‌های فصل ${toFa(state.chapter)}</h2><p>جزئیات مباحث را ببین یا مستقیم وارد قدم‌ها شو</p></div></div><section class="subjects-grid">${subjectCards()}</section></section>`
+    : `<section class="chapter-placeholder">${svg("map")}<div><strong>یک فصل را انتخاب کن</strong><p>تا زمانی که فصل را انتخاب نکنی، درس‌ها و قدم‌های آن نمایش داده نمی‌شوند.</p></div></section>`;
+  return `<div class="page">${header("نقشه راه مطالعه", "۱۲ ایستگاه روشن؛ فقط مرحله اکنون را دنبال کن.")}<div class="section-head"><div><h2>مسیر آمادگی آزمون</h2><p>فصل ${toFa(p.unlocked)} فعال است · فصل‌های ۶ و ۱۲ ایستگاه مرور نیمه‌جامع‌اند</p></div></div>${roadmap()}${selectedChapter}</div>`;
 }
 function courseView() {
   const s = subjects[state.subject],
@@ -301,7 +307,7 @@ function bindDynamic() {
     (b) =>
       (b.onclick = () => {
         state.route = b.dataset.route;
-        if (state.route === "roadmap") state.chapter = studyProgress().unlocked;
+        if (state.route === "roadmap") state.chapter = null;
         render();
       }),
   );
@@ -338,12 +344,10 @@ function bindDynamic() {
           const completedReviews = JSON.parse(
             localStorage.getItem("masirChapterReviews") || "[]",
           );
-          state.part =
-            ![1, 7].includes(n) && completedReviews.includes(n) ? 2 : 1;
+          state.part = ![1, 7].includes(n) && completedReviews.includes(n) ? 2 : 1;
           state.reviewed = [];
           state.step = n === 2 ? 3 : 1;
           state.subject = 0;
-          state.route = "course";
           render();
         } else {
           showToast(`برای باز شدن فصل ${toFa(n)}، ابتدا فصل ${toFa(n - 1)} را تکمیل کن.`);
@@ -651,6 +655,7 @@ document
     (b) =>
       (b.onclick = () => {
         state.route = b.dataset.route;
+        if (state.route === "roadmap") state.chapter = null;
         render();
       }),
   );

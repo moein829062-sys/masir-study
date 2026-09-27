@@ -531,6 +531,21 @@ main {
 .subject-info-modal .primary-button { width:100%; }
 .roadmap-toast { position:fixed; z-index:100; left:50%; bottom:28px; transform:translate(-50%, 24px); max-width:calc(100% - 32px); padding:12px 18px; border-radius:14px; background:#10233f; color:#fff; box-shadow:0 15px 40px rgba(0,0,0,.25); opacity:0; pointer-events:none; transition:.22s ease; text-align:center; }
 .roadmap-toast.is-visible { opacity:1; transform:translate(-50%, 0); }
+.hero-grid.is-progress-banner { grid-template-columns:1fr; }
+.is-progress-banner .countdown-card { min-height:260px; overflow:hidden; }
+.countdown-main { display:flex; align-items:center; justify-content:space-between; gap:36px; height:100%; position:relative; z-index:1; }
+.countdown-content { flex:1; }
+.overall-ring { width:170px; height:170px; flex:0 0 auto; border-radius:50%; padding:12px; display:grid; place-items:center; background:conic-gradient(#fff var(--overall), rgba(255,255,255,.16) 0); box-shadow:0 0 0 22px rgba(255,255,255,.06); }
+.overall-ring > div { width:100%; height:100%; border-radius:50%; display:grid; place-content:center; text-align:center; background:#17385f; }
+.overall-ring strong,.overall-ring small { display:block; }
+.overall-ring strong { font-size:2rem; }
+.overall-ring small { opacity:.78; font-size:.72rem; }
+.chapter-reveal { margin-top:24px; padding-top:4px; animation:chapterReveal .25s ease both; }
+.chapter-placeholder { min-height:150px; margin-top:22px; padding:28px; display:flex; align-items:center; justify-content:center; gap:15px; text-align:right; border:1px dashed var(--line); border-radius:22px; color:var(--muted); background:color-mix(in srgb, var(--surface) 94%, var(--blue)); }
+.chapter-placeholder > svg { width:34px; color:var(--blue); }
+.chapter-placeholder strong { display:block; color:var(--ink); }
+.chapter-placeholder p { margin:4px 0 0; font-size:.8rem; }
+@keyframes chapterReveal { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:none; } }
 .subject-card:hover {
   transform: translateY(-4px);
   box-shadow: var(--shadow);
@@ -1192,6 +1207,9 @@ body[data-theme="dark"] .tour-top button {
   }
 }
 @media (max-width: 760px) {
+  .countdown-main { align-items:flex-start; gap:22px; }
+  .overall-ring { width:112px; height:112px; padding:9px; box-shadow:0 0 0 12px rgba(255,255,255,.06); }
+  .overall-ring strong { font-size:1.35rem; }
   .daily-review-callout { align-items:flex-start; flex-wrap:wrap; padding:17px; }
   .daily-review-callout > div { min-width:calc(100% - 72px); }
   .daily-review-callout button { width:100%; justify-content:center; }
@@ -2126,6 +2144,8 @@ body[data-theme="dark"] .chapter-part.is-active {
   }
 }
 @media (max-width: 390px) {
+  .countdown-main { flex-direction:column-reverse; }
+  .overall-ring { align-self:flex-end; }
   .subjects-grid {
     grid-template-columns: 1fr;
   }

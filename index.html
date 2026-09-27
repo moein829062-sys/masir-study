@@ -20,7 +20,7 @@
       type="image/svg+xml"
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%2310233f'/%3E%3Cpath d='M18 42c8-1 10-8 14-20 4 12 6 19 14 20' fill='none' stroke='%2388b6ff' stroke-width='6' stroke-linecap='round'/%3E%3Ccircle cx='32' cy='20' r='5' fill='%23fff'/%3E%3C/svg%3E"
     />
-    <link rel="stylesheet" href="styles.css?v=14" />
+    <link rel="stylesheet" href="styles.css?v=15" />
   </head>
   <body>
     <div class="app-shell">
@@ -203,8 +203,13 @@
       <ol id="subjectInfoTopics" class="subject-info-topics"></ol>
       <button id="subjectInfoStart" class="primary-button" data-subject="0">ورود به قدم‌های این درس</button>
     </dialog>
+    <dialog id="menuDialog" class="modal menu-dialog" aria-labelledby="menuTitle">
+      <div class="menu-dialog-head"><div><span class="eyebrow">منوی کاربری</span><h2 id="menuTitle">مسیر من</h2></div><button class="icon-button" data-close="menuDialog" aria-label="بستن"><span data-icon="close"></span></button></div>
+      <div class="menu-profile"><span>م</span><div><strong>معین</strong><small>داوطلب آزمون وکالت</small></div></div>
+      <div class="menu-list"><button><span data-icon="bell"></span><div><strong>اعلان‌ها</strong><small>۳ یادآوری مطالعه</small></div><i>۳</i></button><button data-theme-toggle><span data-icon="moon"></span><div><strong>ظاهر برنامه</strong><small>تغییر حالت روشن و تاریک</small></div></button><button><span data-icon="headset"></span><div><strong>پشتیبانی</strong><small>گفت‌وگو با همراه مسیر</small></div></button><button><span data-icon="more"></span><div><strong>تنظیمات</strong><small>حساب و ترجیحات مطالعه</small></div></button></div>
+    </dialog>
     <div id="roadmapToast" class="roadmap-toast" role="status" aria-live="polite"></div>
 
-    <script src="app.js?v=14"></script>
+    <script src="app.js?v=15"></script>
   </body>
 </html>

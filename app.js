@@ -28,6 +28,8 @@ const icons = {
   send: '<path d="m22 2-7 20-4-9-9-4zM22 2 11 13"/>',
   clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v6l4 2"/>',
   info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7h.01"/>',
+  menu: '<path d="M4 7h16M4 12h16M4 17h16"/>',
+  flag: '<path d="M5 22V3M5 4h11l-2 4 2 4H5"/>',
 };
 icons.moon = '<path d="M20 15.5A8.5 8.5 0 0 1 8.5 4 8.5 8.5 0 1 0 20 15.5Z"/>';
 icons.sun =
@@ -108,7 +110,7 @@ function setActive(route) {
 }
 function header(title, subtitle) {
   const dark = document.body.dataset.theme === "dark";
-  return `<header class="topbar"><div><h1>${title}</h1><p>${subtitle}</p></div><div class="header-actions">${pageNavigation()}<button class="icon-button theme-toggle" data-theme-toggle aria-label="${dark ? "فعال‌کردن حالت روشن" : "فعال‌کردن حالت تاریک"}">${svg(dark ? "sun" : "moon")}</button><button class="icon-button" aria-label="اعلان‌ها">${svg("bell")}</button></div></header>`;
+  return `<header class="topbar"><div><h1>${title}</h1><p>${subtitle}</p></div><div class="header-actions">${pageNavigation()}<button class="icon-button theme-toggle" data-theme-toggle aria-label="${dark ? "فعال‌کردن حالت روشن" : "فعال‌کردن حالت تاریک"}">${svg(dark ? "sun" : "moon")}</button><button class="icon-button menu-button" data-open-menu aria-label="بازکردن منو">${svg("menu")}<i></i></button></div></header>`;
 }
 function pageNavigation() {
   const routes = ["home", "roadmap", "reviews", "progress"];
@@ -170,7 +172,7 @@ function reviewSuggestionCards() {
 }
 function roadmap() {
   const p = studyProgress();
-  return `<section class="roadmap-shell"><div class="roadmap">${chapters
+  return `<section class="roadmap-shell"><span class="roadmap-marker is-start"><i></i>شروع</span><span class="roadmap-marker is-finish">${svg("flag")} پایان</span><div class="roadmap">${chapters
     .map((c) => {
       const done = p.completed.includes(c.id),
         current = c.id === p.unlocked,
@@ -184,7 +186,7 @@ function subjectCards() {
   return subjects
     .map(
       (s, i) =>
-        `<article class="subject-card" style="--subject:${s[3]};--subject-soft:${s[4]};--progress:${s[2]}%"><div class="subject-top"><span class="subject-icon">${svg("scale")}</span><span class="percent">${toFa(s[2])}٪</span></div><h3>${s[0]}</h3><p>${s[1]}</p><div class="progress-bar"><i></i></div><div class="subject-actions"><button data-subject-info="${i}">${svg("info")} مباحث این درس</button><button data-subject="${i}">ورود به قدم‌ها</button></div></article>`,
+        `<article class="subject-card" style="--subject:${s[3]};--subject-soft:${s[4]};--progress:${s[2]}%"><div class="subject-top"><span class="subject-icon">${svg("scale")}</span><span class="subject-order">درس ${toFa(i + 1)}</span><span class="percent">${toFa(s[2])}٪</span></div><h3>${s[0]}</h3><p>${s[1]}</p><div class="progress-bar"><i></i></div><div class="subject-actions"><button data-subject-info="${i}">${svg("info")} مباحث</button><button data-subject="${i}">مشاهده قدم‌ها</button></div></article>`,
     )
     .join("");
 }
@@ -432,6 +434,9 @@ function bindDynamic() {
         localStorage.setItem("masirTheme", next);
         render();
       }),
+  );
+  document.querySelectorAll("[data-open-menu]").forEach(
+    (b) => (b.onclick = () => document.getElementById("menuDialog").showModal()),
   );
   document.querySelectorAll("[data-edit-time]").forEach(
     (b) =>

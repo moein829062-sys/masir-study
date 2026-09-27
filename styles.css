@@ -1251,7 +1251,8 @@ main {
 .chapter-node.is-selected .node-button {
   background: var(--chapter);
   color: #fff;
-  box-shadow: 0 0 0 4px color-mix(in srgb, var(--chapter) 28%, transparent),
+  box-shadow:
+    0 0 0 4px color-mix(in srgb, var(--chapter) 28%, transparent),
     0 12px 25px color-mix(in srgb, var(--chapter) 28%, transparent);
   transform: translateY(-3px) scale(1.08);
 }
@@ -1277,7 +1278,9 @@ main {
 .step-card {
   position: relative;
   border-width: 2px;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease,
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
     transform 0.2s ease;
 }
 .step-card.step-complete {
@@ -1393,7 +1396,323 @@ body[data-theme="dark"] .checkpoint {
   border-color: #644b20;
 }
 
+/* High-contrast dark surfaces */
+body[data-theme="dark"] .brand,
+body[data-theme="dark"] .profile-card,
+body[data-theme="dark"] .nav-item,
+body[data-theme="dark"] .task-item,
+body[data-theme="dark"] .section-head,
+body[data-theme="dark"] .subject-top,
+body[data-theme="dark"] .step-copy,
+body[data-theme="dark"] .progress-title {
+  color: var(--ink);
+}
+body[data-theme="dark"] .task-item button,
+body[data-theme="dark"] .suggestion-card button {
+  background: #223957;
+  color: #aecdff;
+}
+body[data-theme="dark"] .subject-icon,
+body[data-theme="dark"] .task-icon,
+body[data-theme="dark"] .suggestion-icon {
+  background: #20334d !important;
+  color: #aecdff !important;
+}
+body[data-theme="dark"] .step-complete .step-number {
+  background: #173c34;
+  color: #73ddba;
+}
+body[data-theme="dark"] .step-next .step-status {
+  background: #22324a;
+  color: #c6d8f3;
+}
+body[data-theme="dark"] .tab:disabled {
+  background: #111c2b;
+  color: #718096;
+}
+body[data-theme="dark"] .review-subject,
+body[data-theme="dark"] .review-confirm,
+body[data-theme="dark"] .suggestion-card,
+body[data-theme="dark"] .progress-overview > div,
+body[data-theme="dark"] .subject-progress,
+body[data-theme="dark"] .review-page-head {
+  background: var(--surface);
+  color: var(--ink);
+  border-color: var(--line);
+}
+body[data-theme="dark"] .review-subject.is-reviewed {
+  background: #15352e;
+  border-color: #2d7c68;
+}
+
+.countdown-edit {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  padding: 7px 11px;
+  border-radius: 12px;
+  font-size: 0.74rem;
+}
+.countdown-edit svg {
+  width: 16px;
+}
+.chapter-parts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  padding: 6px;
+  background: color-mix(in srgb, var(--surface) 92%, var(--chapter));
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  margin: 18px 0;
+}
+.chapter-parts .tab {
+  min-height: 52px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+.chapter-parts .tab span {
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  background: color-mix(in srgb, var(--chapter) 16%, var(--surface));
+  font-weight: 800;
+}
+.chapter-parts .tab svg {
+  width: 17px;
+}
+.chapter-parts .tab:disabled {
+  cursor: not-allowed;
+  opacity: 0.58;
+}
+.review-gate {
+  background: color-mix(in srgb, var(--surface) 96%, var(--chapter));
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  padding: 24px;
+}
+.review-gate-head,
+.review-confirm,
+.review-page-head,
+.progress-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+.review-gate-head h3,
+.review-gate-head p,
+.review-confirm p {
+  margin: 2px 0;
+}
+.review-gate-head p,
+.review-confirm p,
+.subject-progress p,
+.suggestion-card p,
+.review-page-head span {
+  color: var(--muted);
+}
+.review-gate-head > strong {
+  color: var(--chapter);
+  font-size: 1.35rem;
+}
+.review-subjects {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 20px 0;
+}
+.review-subject {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  border-radius: 16px;
+  padding: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: right;
+}
+.review-subject > span {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 11px;
+  color: var(--chapter);
+  background: color-mix(in srgb, var(--chapter) 12%, var(--surface));
+}
+.review-subject > svg {
+  width: 18px;
+  margin-right: auto;
+  color: var(--muted);
+}
+.review-subject strong,
+.review-subject small {
+  display: block;
+}
+.review-subject small {
+  color: var(--muted);
+}
+.review-subject.is-reviewed {
+  border-color: var(--green);
+  background: #effaf6;
+}
+.review-confirm {
+  border-top: 1px solid var(--line);
+  padding-top: 18px;
+}
+.primary-button:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+}
+.review-suggestions,
+.progress-overview {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+.suggestion-card,
+.progress-overview > div,
+.subject-progress,
+.review-page-head {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: var(--shadow);
+}
+.suggestion-icon {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border-radius: 15px;
+  color: var(--blue);
+  background: var(--blue-soft);
+}
+.suggestion-icon svg {
+  width: 21px;
+}
+.suggestion-meta {
+  display: flex;
+  justify-content: space-between;
+  margin: 16px 0 4px;
+  font-size: 0.72rem;
+}
+.suggestion-meta span {
+  color: var(--blue);
+  font-weight: 700;
+}
+.suggestion-meta small {
+  color: var(--muted);
+}
+.suggestion-card h3,
+.suggestion-card p {
+  margin: 4px 0;
+}
+.suggestion-card button {
+  width: 100%;
+  border: 0;
+  border-radius: 12px;
+  padding: 9px;
+  margin-top: 14px;
+  color: var(--blue);
+  background: var(--blue-soft);
+  font-weight: 700;
+}
+.review-page-head {
+  margin-bottom: 20px;
+}
+.review-page-head strong,
+.review-page-head span {
+  display: block;
+}
+.review-score {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  color: var(--green);
+  font-weight: 700;
+}
+.review-score svg {
+  width: 20px;
+}
+.progress-overview > div span,
+.progress-overview > div strong,
+.progress-overview > div small {
+  display: block;
+}
+.progress-overview > div strong {
+  margin: 8px 0;
+  font-size: 1.65rem;
+}
+.progress-overview > div small {
+  color: var(--muted);
+}
+.subject-progress-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+.subject-progress {
+  box-shadow: none;
+}
+.progress-title b {
+  color: var(--subject);
+  font-size: 1.2rem;
+}
+.progress-title strong,
+.progress-title small {
+  display: block;
+}
+.progress-title small {
+  color: var(--muted);
+}
+.subject-progress p {
+  margin: 10px 0 0;
+  font-size: 0.78rem;
+}
+
 @media (max-width: 760px) {
+  .review-suggestions,
+  .progress-overview,
+  .subject-progress-list,
+  .review-subjects {
+    grid-template-columns: 1fr;
+  }
+  .chapter-parts {
+    position: sticky;
+    top: 8px;
+    z-index: 8;
+  }
+  .chapter-parts .tab {
+    padding: 9px 7px;
+    font-size: 0.76rem;
+  }
+  .review-gate {
+    padding: 18px 14px;
+  }
+  .review-gate-head,
+  .review-confirm,
+  .review-page-head {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .review-confirm .primary-button {
+    width: 100%;
+  }
+  .countdown-edit {
+    padding: 6px 8px;
+  }
   .roadmap-shell {
     padding: 14px 10px;
     overflow-x: auto;

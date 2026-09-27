@@ -65,7 +65,14 @@ const chapterThemes = [
   "#a05b84",
   "#47735f",
 ];
-let state = { route: "home", chapter: 2, subject: 0, part: 1, step: 3 };
+let state = {
+  route: "home",
+  chapter: 2,
+  subject: 0,
+  part: 1,
+  step: 3,
+  reviewed: [],
+};
 function toFa(n) {
   return String(n).replace(/\d/g, (d) => "۰۱۲۳۴۵۶۷۸۹"[d]);
 }
@@ -95,7 +102,7 @@ function svg(n) {
 function countdown() {
   const c = course();
   let target = c?.date
-    ? new Date(c.date + "T09:00:00")
+    ? new Date(`${c.date}T${c.time || "09:00"}:00`)
     : new Date(Date.now() + 95 * 864e5);
   let diff = Math.max(0, target - Date.now());
   const d = Math.floor(diff / 864e5);
@@ -110,10 +117,18 @@ function homeView() {
   const c = course();
   const t = countdown();
   return `<div class="page">${header("سلام معین، آماده‌ای؟", "امروز یک قدم کوچک، تو را به قبولی نزدیک‌تر می‌کند.")}
-<section class="hero-grid"><article class="countdown-card"><div class="countdown-head"><div><small>زمان باقی‌مانده تا</small><strong>${c?.name || "آزمون وکالت ۱۴۰۵"}</strong></div><span class="tag">برنامه فعال</span></div><div class="countdown-time" id="countdown"><div class="time-unit"><b>${t[0]}</b><small>روز</small></div><div class="time-unit"><b>${t[1]}</b><small>ساعت</small></div><div class="time-unit"><b>${t[2]}</b><small>دقیقه</small></div><div class="time-unit"><b>${t[3]}</b><small>ثانیه</small></div></div><div class="countdown-foot">${svg("calendar")} برنامه براساس زمان باقی‌مانده به‌روز می‌شود</div></article>
+<section class="hero-grid"><article class="countdown-card"><div class="countdown-head"><div><small>زمان باقی‌مانده تا</small><strong>${c?.name || "آزمون وکالت ۱۴۰۵"}</strong></div><button class="countdown-edit" data-edit-time>${svg("clock")} تنظیم زمان</button></div><div class="countdown-time" id="countdown"><div class="time-unit"><b>${t[0]}</b><small>روز</small></div><div class="time-unit"><b>${t[1]}</b><small>ساعت</small></div><div class="time-unit"><b>${t[2]}</b><small>دقیقه</small></div><div class="time-unit"><b>${t[3]}</b><small>ثانیه</small></div></div><div class="countdown-foot">${svg("calendar")} ${c?.date ? `موعد: ${toFa(new Intl.DateTimeFormat("fa-IR", { dateStyle: "long", timeStyle: "short" }).format(new Date(`${c.date}T${c.time || "09:00"}:00`)))}` : "برنامه براساس زمان باقی‌مانده به‌روز می‌شود"}</div></article>
 <article class="today-card"><h3>برنامه امروز</h3><p>سه فعالیت · حدود ۱ ساعت و ۲۰ دقیقه</p><div class="task-item"><span class="task-icon">${svg("repeat")}</span><span><strong>مرور اشخاص و محجورین</strong><small>۸ دقیقه · ۱۲ تست</small></span><button data-open-review>شروع</button></div><div class="task-item"><span class="task-icon">${svg("play")}</span><span><strong>ویدیوی شرکت‌های تجاری</strong><small>۳۵ دقیقه</small></span><button>ادامه</button></div></article></section>
-<div class="section-head"><div><h2>نقشه راه تو</h2><p>اکنون در فصل دوم، بخش اول هستی</p></div><button class="text-link" data-route="roadmap">مشاهده کامل</button></div>${roadmap()}
-<div class="section-head"><div><h2>درس‌ها</h2><p>پیشرفت تو در هر درس</p></div></div><section class="subjects-grid">${subjectCards()}</section></div>`;
+<div class="section-head"><div><h2>پیشنهادهای امروز</h2><p>سه پیشنهاد کوتاه براساس مسیر مطالعه تو</p></div><button class="text-link" data-route="reviews">همه مرورها</button></div>${reviewSuggestionCards()}</div>`;
+}
+
+function reviewSuggestionCards() {
+  const items = [
+    ["repeat", "مرور اشخاص و محجورین", "حقوق مدنی", "۸ دقیقه", "اولویت بالا"],
+    ["quiz", "۱۲ تست شرکت‌های تجاری", "حقوق تجارت", "۱۵ دقیقه", "برای امروز"],
+    ["file", "خلاصه صلاحیت دادگاه", "آیین دادرسی مدنی", "۶ دقیقه", "مرور سریع"],
+  ];
+  return `<section class="review-suggestions">${items.map((item, index) => `<article class="suggestion-card"><div class="suggestion-icon">${svg(item[0])}</div><div class="suggestion-meta"><span>${item[4]}</span><small>${item[2]}</small></div><h3>${item[1]}</h3><p>${item[3]} · پیشنهاد شماره ${toFa(index + 1)}</p><button ${index === 0 ? "data-open-review" : ""}>شروع مرور</button></article>`).join("")}</section>`;
 }
 function roadmap() {
   const p = studyProgress();
@@ -142,16 +157,40 @@ function roadmapView() {
 function courseView() {
   const s = subjects[state.subject],
     p = studyProgress(),
-    done = p.completed.includes(state.chapter);
-  return `<div class="page"><div class="course-header"><button class="back-button" data-route="roadmap" aria-label="بازگشت">${svg("arrow")}</button><div><h1>${s[0]}</h1><p>فصل ${toFa(state.chapter)} · برنامه شخصی تو</p></div></div><section class="chapter-summary"><div><p class="eyebrow">${done ? "تکمیل شده" : "در حال مطالعه"}</p><h2>${state.chapter === 6 ? "مرور جامع فصل‌های ۱ تا ۵" : "مبانی و مفاهیم کلیدی"}</h2><p>قدم‌ها را به‌ترتیب کامل کن. مرور فردای هر قدم به شکل خودکار به برنامه روزانه اضافه می‌شود.</p></div><div class="summary-progress"><strong>${done ? "۱۰۰٪" : "۴۲٪"}</strong></div></section><div class="tabs"><button class="tab ${state.part === 1 ? "is-active" : ""}" data-part="1">بخش اول</button>${![1, 7].includes(state.chapter) ? `<button class="tab ${state.part === 2 ? "is-active" : ""}" data-part="2">بخش دوم ${state.part === 1 ? svg("lock") : ""}</button>` : ""}</div><section class="lesson-layout"><nav class="lesson-nav">${subjects
-    .slice(0, 6)
-    .map(
-      (x, i) =>
-        `<button class="${i === state.subject ? "is-active" : ""}" data-subject="${i}"><span>${toFa(i + 1)}</span>${x[0]}</button>`,
-    )
+    done = p.completed.includes(state.chapter),
+    hasReviewGate = ![1, 7].includes(state.chapter),
+    reviewDone = JSON.parse(
+      localStorage.getItem("masirChapterReviews") || "[]",
+    ).includes(state.chapter),
+    showingReview = hasReviewGate && state.part === 1;
+  const tabs = hasReviewGate
+    ? `<div class="tabs chapter-parts"><button class="tab ${state.part === 1 ? "is-active" : ""}" data-part="1"><span>۱</span> مرور فصل ${toFa(state.chapter - 1)} ${reviewDone ? svg("check") : ""}</button><button class="tab ${state.part === 2 ? "is-active" : ""}" data-part="2" ${reviewDone ? "" : "disabled"}><span>۲</span> محتوای فصل ${toFa(state.chapter)} ${reviewDone ? "" : svg("lock")}</button></div>`
+    : `<div class="tabs chapter-parts"><button class="tab is-active"><span>۱</span> محتوای فصل ${toFa(state.chapter)}</button></div>`;
+  const body = showingReview
+    ? chapterReview(reviewDone)
+    : `<section class="lesson-layout"><nav class="lesson-nav">${subjects
+        .slice(0, 6)
+        .map(
+          (x, i) =>
+            `<button class="${i === state.subject ? "is-active" : ""}" data-subject="${i}"><span>${toFa(i + 1)}</span>${x[0]}</button>`,
+        )
+        .join(
+          "",
+        )}</nav><div class="steps-list">${steps()}<div class="unlock-card ${done ? "is-complete" : ""}"><span class="unlock-icon">${svg(done ? "check" : "lock")}</span><div><strong>${done ? "این فصل تکمیل شده است" : "آماده رفتن به فصل بعدی هستی؟"}</strong><p>${done ? `فصل ${toFa(Math.min(12, state.chapter + 1))} برای تو باز شده است.` : "پس از مرور و تست‌خوانی، پایان فصل را ثبت کن."}</p></div>${!done ? `<button class="primary-button" data-complete-chapter>ثبت پایان فصل و بازکردن فصل ${toFa(Math.min(12, state.chapter + 1))}</button>` : ""}</div></div></section>`;
+  return `<div class="page"><div class="course-header"><button class="back-button" data-route="roadmap" aria-label="بازگشت">${svg("arrow")}</button><div><h1>${showingReview ? `مرور فصل ${toFa(state.chapter - 1)}` : s[0]}</h1><p>فصل ${toFa(state.chapter)} · ${showingReview ? "پیش‌نیاز ورود به فصل" : "محتوای تازه"}</p></div></div><section class="chapter-summary"><div><p class="eyebrow">${done ? "تکمیل شده" : showingReview ? "ایستگاه مرور" : "در حال مطالعه"}</p><h2>${showingReview ? `پیش از شروع فصل ${toFa(state.chapter)}، آموخته‌های فصل ${toFa(state.chapter - 1)} را تثبیت کن` : state.chapter === 6 ? "مرور جامع فصل‌های ۱ تا ۵" : "مبانی و مفاهیم کلیدی"}</h2><p>${showingReview ? "درس‌های زیر را یکی‌یکی مرور و تأیید کن؛ سپس محتوای تازه فصل باز می‌شود." : "قدم‌ها را به‌ترتیب کامل کن. مرور فردای هر قدم به شکل خودکار به برنامه روزانه اضافه می‌شود."}</p></div><div class="summary-progress"><strong>${showingReview ? `${toFa(state.reviewed.length)}/${toFa(6)}` : done ? "۱۰۰٪" : "۴۲٪"}</strong></div></section>${tabs}${body}</div>`;
+}
+
+function chapterReview(reviewDone) {
+  const reviewList = subjects.slice(0, 6);
+  const allDone = reviewDone || state.reviewed.length === reviewList.length;
+  return `<section class="review-gate"><div class="review-gate-head"><div><span class="eyebrow">مرور فعال</span><h3>درس‌های فصل ${toFa(state.chapter - 1)}</h3><p>فقط نکات مهم این درس‌ها را مرور کن؛ این بخش محتوای جدید ندارد.</p></div><strong>${toFa(state.reviewed.length)} از ${toFa(reviewList.length)}</strong></div><div class="review-subjects">${reviewList
+    .map((item, index) => {
+      const checked = reviewDone || state.reviewed.includes(index);
+      return `<button class="review-subject ${checked ? "is-reviewed" : ""}" data-review-subject="${index}" ${reviewDone ? "disabled" : ""}><span>${checked ? svg("check") : toFa(index + 1)}</span><div><strong>${item[0]}</strong><small>${checked ? "مرور شد" : "نیاز به مرور"}</small></div>${svg("repeat")}</button>`;
+    })
     .join(
       "",
-    )}</nav><div class="steps-list">${steps()}<div class="unlock-card ${done ? "is-complete" : ""}"><span class="unlock-icon">${svg(done ? "check" : "lock")}</span><div><strong>${done ? "این فصل تکمیل شده است" : "آماده رفتن به فصل بعدی هستی؟"}</strong><p>${done ? `فصل ${toFa(Math.min(12, state.chapter + 1))} برای تو باز شده است.` : "پس از مرور و تست‌خوانی، پایان فصل را ثبت کن."}</p></div>${!done ? `<button class="primary-button" data-complete-chapter>ثبت پایان فصل و بازکردن فصل ${toFa(Math.min(12, state.chapter + 1))}</button>` : ""}</div></div></section></div>`;
+    )}</div><div class="review-confirm"><div><strong>${allDone ? "مرور فصل قبل کامل شد" : "ابتدا همه درس‌ها را تأیید کن"}</strong><p>پس از تأیید، بخش دوم و قدم‌های فصل ${toFa(state.chapter)} باز می‌شود.</p></div><button class="primary-button" data-complete-review ${allDone ? "" : "disabled"}>${reviewDone ? "رفتن به محتوای فصل" : "تأیید مرور و بازکردن بخش دوم"}</button></div></section>`;
 }
 function steps() {
   const titles = [
@@ -171,8 +210,22 @@ function steps() {
     .map((t, i) => {
       const number = i + 1;
       const special = i > 7;
-      const status = number < current ? "complete" : number === current ? "current" : number === current + 1 ? "next" : "locked";
-      const label = status === "complete" ? "انجام‌شده" : status === "current" ? "قدم فعلی" : status === "next" ? "قدم بعدی" : "قفل‌شده";
+      const status =
+        number < current
+          ? "complete"
+          : number === current
+            ? "current"
+            : number === current + 1
+              ? "next"
+              : "locked";
+      const label =
+        status === "complete"
+          ? "انجام‌شده"
+          : status === "current"
+            ? "قدم فعلی"
+            : status === "next"
+              ? "قدم بعدی"
+              : "قفل‌شده";
       const isOpen = state.step === number;
       return `<article class="step-card step-${status} ${special ? "checkpoint" : ""} ${isOpen ? "is-open is-selected" : ""}"><button class="step-head" data-step="${number}" ${status === "locked" ? "disabled" : ""}><span class="step-number">${status === "complete" ? svg("check") : toFa(number)}</span><span class="step-copy"><strong>${t}</strong><small>${special ? (i === 8 ? "تثبیت و بازیابی فعال" : "تحلیل تست‌های پرتکرار") : "ویدئو، جزوه و تمرین"}</small></span><span class="step-status">${label}</span>${svg(status === "locked" ? "lock" : "chevron").replace("<svg", '<svg class="step-chevron"')}</button><div class="step-content">${resources(i)}</div></article>`;
     })
@@ -202,15 +255,9 @@ function resource(icon, title, meta) {
   return `<div class="resource"><span class="resource-icon">${svg(icon)}</span><span><strong>${title}</strong><small>${meta}</small></span><button>باز کردن</button></div>`;
 }
 function simpleView(type) {
-  const d =
-    type === "reviews"
-      ? ["مرورهای امروز", "سه مرور برای تثبیت یادگیری آماده است", "repeat"]
-      : [
-          "گزارش پیشرفت",
-          "گزارش کامل پس از پایان اولین فصل نمایش داده می‌شود",
-          "chart",
-        ];
-  return `<div class="page">${header(d[0], "نمای کلی برنامه شخصی تو")}<div class="empty-state"><div class="modal-symbol">${svg(d[2])}</div><h2>${d[1]}</h2><p>این بخش در نسخه بعدی با داده‌های کامل مطالعه تو تکمیل می‌شود.</p><button class="primary-button" data-route="home">بازگشت به خانه</button></div></div>`;
+  if (type === "reviews")
+    return `<div class="page">${header("مرورهای امروز", "مرورهای پیشنهادی براساس قدم‌هایی که قبلاً خوانده‌ای.")}<div class="review-page-head"><div><strong>۳ مرور آماده</strong><span>مجموع زمان پیشنهادی: ۲۹ دقیقه</span></div><div class="review-score">${svg("spark")} تثبیت امروز: ۷۸٪</div></div>${reviewSuggestionCards()}</div>`;
+  return `<div class="page">${header("گزارش پیشرفت", "وضعیت هر درس را مستقل و قابل مقایسه ببین.")}<section class="progress-overview"><div><span>پیشرفت کل دوره</span><strong>۶۱٪</strong><small>۱۷٪ رشد در ۳۰ روز گذشته</small></div><div><span>فصل فعال</span><strong>۲</strong><small>مرور فصل یک</small></div><div><span>زمان مطالعه</span><strong>۴۸ ساعت</strong><small>این دوره</small></div></section><div class="section-head"><div><h2>پیشرفت درس‌ها</h2><p>درصد، فصل تکمیل‌شده و فعالیت بعدی هر درس</p></div></div><section class="subject-progress-list">${subjects.map((s) => `<article class="subject-progress" style="--subject:${s[3]};--progress:${s[2]}%"><div class="progress-title"><span class="subject-icon">${svg("scale")}</span><div><strong>${s[0]}</strong><small>${s[1]}</small></div><b>${toFa(s[2])}٪</b></div><div class="progress-bar"><i></i></div><p>فعالیت بعدی: ${+s[2] === 100 ? "مرور دوره‌ای" : "ادامه قدم فعلی"}</p></article>`).join("")}</section></div>`;
 }
 function render() {
   setActive(state.route);
@@ -252,6 +299,9 @@ function bindDynamic() {
         const n = +b.dataset.chapter;
         if (n <= studyProgress().unlocked) {
           state.chapter = n;
+          state.part = [1, 7].includes(n) ? 1 : 1;
+          state.reviewed = [];
+          state.step = n === 2 ? 3 : 1;
           state.route = "roadmap";
           render();
         }
@@ -264,15 +314,36 @@ function bindDynamic() {
         render();
       }),
   );
-  document
-    .querySelectorAll("[data-step]")
-    .forEach(
-      (b) =>
-        (b.onclick = () => {
-          state.step = +b.dataset.step;
-          render();
-        }),
-    );
+  document.querySelectorAll("[data-review-subject]").forEach(
+    (b) =>
+      (b.onclick = () => {
+        const id = +b.dataset.reviewSubject;
+        state.reviewed = state.reviewed.includes(id)
+          ? state.reviewed.filter((item) => item !== id)
+          : [...state.reviewed, id];
+        render();
+      }),
+  );
+  document.querySelectorAll("[data-complete-review]").forEach(
+    (b) =>
+      (b.onclick = () => {
+        const saved = JSON.parse(
+          localStorage.getItem("masirChapterReviews") || "[]",
+        );
+        if (!saved.includes(state.chapter)) saved.push(state.chapter);
+        localStorage.setItem("masirChapterReviews", JSON.stringify(saved));
+        state.part = 2;
+        state.step = state.chapter === 2 ? 3 : 1;
+        render();
+      }),
+  );
+  document.querySelectorAll("[data-step]").forEach(
+    (b) =>
+      (b.onclick = () => {
+        state.step = +b.dataset.step;
+        render();
+      }),
+  );
   document.querySelectorAll("[data-theme-toggle]").forEach(
     (b) =>
       (b.onclick = () => {
@@ -280,6 +351,19 @@ function bindDynamic() {
         document.body.dataset.theme = next;
         localStorage.setItem("masirTheme", next);
         render();
+      }),
+  );
+  document.querySelectorAll("[data-edit-time]").forEach(
+    (b) =>
+      (b.onclick = () => {
+        const saved = course();
+        if (saved) {
+          document.getElementById("courseInput").value = saved.name;
+          document.getElementById("examDateInput").value = saved.date;
+          document.getElementById("examTimeInput").value =
+            saved.time || "09:00";
+        }
+        document.getElementById("setupDialog").showModal();
       }),
   );
   document
@@ -333,6 +417,7 @@ document.getElementById("setupForm").onsubmit = (e) => {
     JSON.stringify({
       name: document.getElementById("courseInput").value,
       date: document.getElementById("examDateInput").value,
+      time: document.getElementById("examTimeInput").value,
     }),
   );
   document.getElementById("setupDialog").close();
@@ -361,7 +446,9 @@ document
   );
 document.body.dataset.theme =
   localStorage.getItem("masirTheme") ||
-  (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  (window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "dark"
+    : "light");
 render();
 if (!course())
   setTimeout(() => document.getElementById("setupDialog").showModal(), 500);

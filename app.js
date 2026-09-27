@@ -177,7 +177,7 @@ function courseView() {
         .join(
           "",
         )}</nav><div class="steps-list">${steps()}<div class="unlock-card ${done ? "is-complete" : ""}"><span class="unlock-icon">${svg(done ? "check" : "lock")}</span><div><strong>${done ? "این فصل تکمیل شده است" : "آماده رفتن به فصل بعدی هستی؟"}</strong><p>${done ? `فصل ${toFa(Math.min(12, state.chapter + 1))} برای تو باز شده است.` : "پس از مرور و تست‌خوانی، پایان فصل را ثبت کن."}</p></div>${!done ? `<button class="primary-button" data-complete-chapter>ثبت پایان فصل و بازکردن فصل ${toFa(Math.min(12, state.chapter + 1))}</button>` : ""}</div></div></section>`;
-  return `<div class="page"><div class="course-header"><button class="back-button" data-route="roadmap" aria-label="بازگشت">${svg("arrow")}</button><div><h1>${showingReview ? `مرور فصل ${toFa(state.chapter - 1)}` : s[0]}</h1><p>فصل ${toFa(state.chapter)} · ${showingReview ? "پیش‌نیاز ورود به فصل" : "محتوای تازه"}</p></div></div><section class="chapter-summary"><div><p class="eyebrow">${done ? "تکمیل شده" : showingReview ? "ایستگاه مرور" : "در حال مطالعه"}</p><h2>${showingReview ? `پیش از شروع فصل ${toFa(state.chapter)}، آموخته‌های فصل ${toFa(state.chapter - 1)} را تثبیت کن` : state.chapter === 6 ? "مرور جامع فصل‌های ۱ تا ۵" : "مبانی و مفاهیم کلیدی"}</h2><p>${showingReview ? "درس‌های زیر را یکی‌یکی مرور و تأیید کن؛ سپس محتوای تازه فصل باز می‌شود." : "قدم‌ها را به‌ترتیب کامل کن. مرور فردای هر قدم به شکل خودکار به برنامه روزانه اضافه می‌شود."}</p></div><div class="summary-progress"><strong>${showingReview ? `${toFa(state.reviewed.length)}/${toFa(6)}` : done ? "۱۰۰٪" : "۴۲٪"}</strong></div></section>${tabs}${body}</div>`;
+  return `<div class="page"><div class="course-header"><button class="back-button" data-route="roadmap" aria-label="بازگشت">${svg("arrow")}</button><div><h1>${showingReview ? `مرور فصل ${toFa(state.chapter - 1)}` : s[0]}</h1><p>فصل ${toFa(state.chapter)} · ${showingReview ? "پیش‌نیاز ورود به فصل" : "محتوای تازه"}</p></div></div><section class="chapter-summary"><div><p class="eyebrow">${showingReview ? "ایستگاه مرور" : done ? "تکمیل شده" : "در حال مطالعه"}</p><h2>${showingReview ? `پیش از شروع فصل ${toFa(state.chapter)}، آموخته‌های فصل ${toFa(state.chapter - 1)} را تثبیت کن` : state.chapter === 6 ? "مرور جامع فصل‌های ۱ تا ۵" : "مبانی و مفاهیم کلیدی"}</h2><p>${showingReview ? "درس‌های زیر را یکی‌یکی مرور و تأیید کن؛ سپس محتوای تازه فصل باز می‌شود." : "قدم‌ها را به‌ترتیب کامل کن. مرور فردای هر قدم به شکل خودکار به برنامه روزانه اضافه می‌شود."}</p></div><div class="summary-progress"><strong>${showingReview ? `${toFa(state.reviewed.length)}/${toFa(6)}` : done ? "۱۰۰٪" : "۴۲٪"}</strong></div></section>${tabs}${body}</div>`;
 }
 
 function chapterReview(reviewDone) {
@@ -299,10 +299,15 @@ function bindDynamic() {
         const n = +b.dataset.chapter;
         if (n <= studyProgress().unlocked) {
           state.chapter = n;
-          state.part = [1, 7].includes(n) ? 1 : 1;
+          const completedReviews = JSON.parse(
+            localStorage.getItem("masirChapterReviews") || "[]",
+          );
+          state.part =
+            ![1, 7].includes(n) && completedReviews.includes(n) ? 2 : 1;
           state.reviewed = [];
           state.step = n === 2 ? 3 : 1;
-          state.route = "roadmap";
+          state.subject = 0;
+          state.route = "course";
           render();
         }
       }),

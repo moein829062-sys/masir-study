@@ -142,7 +142,17 @@ function homeView() {
   const progress = overallProgress();
   return `<div class="page">${header("سلام معین، آماده‌ای؟", "امروز یک قدم کوچک، تو را به قبولی نزدیک‌تر می‌کند.")}
 <section class="hero-grid is-progress-banner"><article class="countdown-card"><div class="countdown-main"><div class="countdown-content"><div class="countdown-head"><div><small>زمان باقی‌مانده تا</small><strong>${c?.name || "آزمون وکالت ۱۴۰۵"}</strong></div><button class="countdown-edit" data-edit-time>${svg("clock")} تنظیم زمان</button></div><div class="countdown-time" id="countdown"><div class="time-unit"><b>${t[0]}</b><small>روز</small></div><div class="time-unit"><b>${t[1]}</b><small>ساعت</small></div><div class="time-unit"><b>${t[2]}</b><small>دقیقه</small></div><div class="time-unit"><b>${t[3]}</b><small>ثانیه</small></div></div><div class="countdown-foot">${svg("calendar")} ${c?.date ? `موعد: ${toFa(new Intl.DateTimeFormat("fa-IR", { dateStyle: "long", timeStyle: "short" }).format(new Date(`${c.date}T${c.time || "09:00"}:00`)))}` : "برنامه براساس زمان باقی‌مانده به‌روز می‌شود"}</div></div><div class="overall-ring" style="--overall:${progress * 3.6}deg"><div><strong>${toFa(progress)}٪</strong><small>پیشرفت کل</small></div></div></div></article></section>
+${dailyActivityLog()}
 <section class="daily-review-callout"><span class="daily-review-icon">${svg("repeat")}</span><div><small>مرور روزانه</small><h2>مطالب روزهای قبل را مرور کن تا یادت نرود</h2><p>مباحثی که زمان مرورشان رسیده، اینجا آماده‌اند.</p></div><button data-route="reviews">شروع مرور روزانه ${svg("arrow")}</button></section><div class="section-head"><div><h2>آماده مرور</h2><p>سه مبحث از مطالعه‌های روزهای قبل</p></div><button class="text-link" data-route="reviews">مشاهده همه</button></div>${reviewSuggestionCards()}</div>`;
+}
+
+function dailyActivityLog() {
+  const rows = [
+    ["حقوق جزا", "فصل ۱ · عناصر جرم", "مطالعه و جزوه", "۴۲ دقیقه", "تکمیل شد"],
+    ["حقوق جزا", "فصل ۱ · تست آموزشی", "۲۴ تست", "۱۸ درست", "۷۵٪"],
+    ["حقوق مدنی", "اشخاص و محجورین", "مرور سریع", "۱۲ دقیقه", "مرور شد"],
+  ];
+  return `<section class="daily-log"><div class="daily-log-head"><div><span class="eyebrow">گزارش روزانه من</span><h2>دیروز چه کارهایی انجام دادی؟</h2><p>خلاصه فعالیت‌های ثبت‌شده در روز گذشته</p></div><div class="daily-log-date">${svg("calendar")} دیروز</div></div><div class="daily-log-stats"><div><strong>۵۴</strong><small>دقیقه مطالعه</small></div><div><strong>۲۴</strong><small>تست پاسخ‌داده‌شده</small></div><div><strong>۷۵٪</strong><small>پاسخ صحیح</small></div></div><div class="daily-table-wrap"><table class="daily-table"><thead><tr><th>درس</th><th>مبحث</th><th>فعالیت</th><th>نتیجه</th><th>وضعیت</th></tr></thead><tbody>${rows.map((row) => `<tr>${row.map((cell, index) => `<td data-label="${["درس", "مبحث", "فعالیت", "نتیجه", "وضعیت"][index]}">${cell}</td>`).join("")}</tr>`).join("")}</tbody></table></div></section>`;
 }
 
 function reviewSuggestionCards() {

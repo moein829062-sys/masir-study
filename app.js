@@ -164,8 +164,8 @@ function courseView() {
     ).includes(state.chapter),
     showingReview = hasReviewGate && state.part === 1;
   const tabs = hasReviewGate
-    ? `<div class="tabs chapter-parts"><button class="tab ${state.part === 1 ? "is-active" : ""}" data-part="1"><span>۱</span> مرور فصل ${toFa(state.chapter - 1)} ${reviewDone ? svg("check") : ""}</button><button class="tab ${state.part === 2 ? "is-active" : ""}" data-part="2" ${reviewDone ? "" : "disabled"}><span>۲</span> محتوای فصل ${toFa(state.chapter)} ${reviewDone ? "" : svg("lock")}</button></div>`
-    : `<div class="tabs chapter-parts"><button class="tab is-active"><span>۱</span> محتوای فصل ${toFa(state.chapter)}</button></div>`;
+    ? `<div class="chapter-flow" aria-label="مسیر فصل"><button class="chapter-part ${state.part === 1 ? "is-active" : ""} ${reviewDone ? "is-done" : ""}" data-part="1"><span class="part-number">۱</span><span class="part-copy"><small>دروازه ورود</small><strong>مرور فصل ${toFa(state.chapter - 1)}</strong></span>${reviewDone ? svg("check") : svg("repeat")}</button><div class="part-connector ${reviewDone ? "is-ready" : ""}"><i></i><span>${reviewDone ? "باز شد" : "پس از مرور"}</span><i></i></div><button class="chapter-part ${state.part === 2 ? "is-active" : ""}" data-part="2" ${reviewDone ? "" : "disabled"}><span class="part-number">۲</span><span class="part-copy"><small>مقصد فصل</small><strong>محتوای فصل ${toFa(state.chapter)}</strong></span>${reviewDone ? svg("book") : svg("lock")}</button></div>`
+    : `<div class="chapter-flow is-single"><button class="chapter-part is-active"><span class="part-number">۱</span><span class="part-copy"><small>مقصد فصل</small><strong>محتوای فصل ${toFa(state.chapter)}</strong></span>${svg("book")}</button></div>`;
   const body = showingReview
     ? chapterReview(reviewDone)
     : `<section class="lesson-layout"><nav class="lesson-nav">${subjects
@@ -318,9 +318,19 @@ function bindDynamic() {
     (b) =>
       (b.onclick = () => {
         const id = +b.dataset.reviewSubject;
-        state.reviewed = state.reviewed.includes(id)
+        const nextReviewed = state.reviewed.includes(id)
           ? state.reviewed.filter((item) => item !== id)
           : [...state.reviewed, id];
+        state.reviewed = nextReviewed;
+        if (nextReviewed.length === subjects.slice(0, 6).length) {
+          const saved = JSON.parse(
+            localStorage.getItem("masirChapterReviews") || "[]",
+          );
+          if (!saved.includes(state.chapter)) saved.push(state.chapter);
+          localStorage.setItem("masirChapterReviews", JSON.stringify(saved));
+          state.part = 2;
+          state.step = state.chapter === 2 ? 3 : 1;
+        }
         render();
       }),
   );
@@ -403,13 +413,163 @@ document.getElementById("supportForm").onsubmit = (e) => {
     );
   input.value = "";
 };
-document.getElementById("explainPage").onclick = () =>
-  document
-    .getElementById("supportMessages")
-    .insertAdjacentHTML(
-      "beforeend",
-      `<div class="bot-message">در این صفحه می‌توانی مسیر فصل‌ها، درصد پیشرفت درس‌ها و فعالیت بعدی‌ات را ببینی. هر بخش آبی قابل انتخاب است.</div>`,
+const tourContent = {
+  home: [
+    [
+      "مسیرهای اصلی",
+      "از این نوار بین خانه، نقشه راه، مرورهای امروز و گزارش پیشرفت جابه‌جا می‌شوی.",
+      "nav",
+    ],
+    [
+      "زمان تا آزمون",
+      "تاریخ و ساعت آزمون را اینجا تنظیم کن؛ شمارش معکوس و پیشنهادهای روزانه براساس همین زمان به‌روز می‌شوند.",
+      ".countdown-card",
+    ],
+    [
+      "برنامه امروز",
+      "کار اصلی امروز و زمان تقریبی هر فعالیت اینجا جمع شده تا بدون سردرگمی شروع کنی.",
+      ".today-card",
+    ],
+    [
+      "پیشنهادهای شخصی",
+      "این کارت‌ها مرورهای کوتاهی هستند که براساس درس‌های قبلی و اولویت حافظه به تو پیشنهاد می‌شوند.",
+      ".review-suggestions",
+    ],
+  ],
+  roadmap: [
+    [
+      "نقشه راه فصل‌ها",
+      "فصل فعال رنگی است، فصل‌های تمام‌شده علامت تأیید دارند و فصل‌های بعدی تا رسیدن نوبتشان قفل می‌مانند.",
+      ".roadmap-shell",
+    ],
+    [
+      "انتخاب فصل",
+      "روی هر فصل بازشده بزن تا درس‌های همان فصل پایین صفحه نمایش داده شوند.",
+      ".roadmap-shell",
+    ],
+    [
+      "درس‌های فصل",
+      "هر کارت درصد پیشرفت همان درس را نشان می‌دهد؛ با انتخاب درس وارد قدم‌های آن می‌شوی.",
+      ".subjects-grid",
+    ],
+  ],
+  course: [
+    [
+      "وضعیت فصل",
+      "این بخش می‌گوید اکنون در مرور فصل قبلی هستی یا در محتوای تازه فصل جدید.",
+      ".chapter-summary",
+    ],
+    [
+      "مسیر دو‌بخشی فصل",
+      "ابتدا مرور فصل قبل را کامل می‌کنی؛ سپس بخش دوم به‌طور خودکار باز می‌شود و قدم‌های فصل جدید را می‌بینی.",
+      ".chapter-flow",
+    ],
+    [
+      "مرور پیش‌نیاز",
+      "هر درس را پس از مرور تأیید کن. با تأیید آخرین درس، مستقیم وارد محتوای فصل جدید می‌شوی.",
+      ".review-gate",
+    ],
+    [
+      "قدم‌های یادگیری",
+      "قدم فعلی برجسته است، قدم بعدی آماده و بقیه قفل‌اند. هر قدم شامل ویدئو، جزوه یا تمرین است.",
+      ".steps-list",
+    ],
+  ],
+  reviews: [
+    [
+      "خلاصه مرور امروز",
+      "اینجا تعداد مرورهای آماده، زمان کل و میزان تثبیت امروز را می‌بینی.",
+      ".review-page-head",
+    ],
+    [
+      "کارت‌های مرور",
+      "هر کارت می‌گوید چه مبحثی، از کدام درس و با چه اولویتی باید مرور شود.",
+      ".review-suggestions",
+    ],
+    [
+      "چرا این پیشنهاد؟",
+      "پیشنهادها از قدم‌هایی ساخته می‌شوند که قبلاً خوانده‌ای و امروز زمان مناسب بازیابی آن‌هاست.",
+      ".review-suggestions",
+    ],
+  ],
+  progress: [
+    [
+      "تصویر کلی دوره",
+      "پیشرفت کل، فصل فعال و مجموع زمان مطالعه را در یک نگاه می‌بینی.",
+      ".progress-overview",
+    ],
+    [
+      "پیشرفت هر درس",
+      "هر ردیف درصد، تعداد فصل‌های تکمیل‌شده و فعالیت بعدی همان درس را جدا نشان می‌دهد.",
+      ".subject-progress-list",
+    ],
+    [
+      "تشخیص اولویت",
+      "درسی که درصد پایین‌تری دارد به توجه بیشتری نیاز دارد؛ فعالیت بعدی زیر همان کارت نوشته شده است.",
+      ".subject-progress-list",
+    ],
+  ],
+};
+let tourIndex = 0;
+let activeTour = [];
+function tourTarget(selector) {
+  if (selector === "nav")
+    return document.querySelector(
+      window.innerWidth <= 760 ? ".mobile-nav" : ".sidebar",
     );
+  let target = document.querySelector(selector);
+  if (!target && state.route === "course" && selector === ".review-gate")
+    target = document.querySelector(".lesson-layout");
+  return target;
+}
+function closeTour() {
+  document.querySelector(".tour-target")?.classList.remove("tour-target");
+  const dialog = document.getElementById("tourDialog");
+  if (dialog.open) dialog.close();
+}
+function showTourStep() {
+  document.querySelector(".tour-target")?.classList.remove("tour-target");
+  const [title, text, selector] = activeTour[tourIndex];
+  const target = tourTarget(selector);
+  if (target) {
+    target.classList.add("tour-target");
+    target.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+  document.getElementById("tourTitle").textContent = title;
+  document.getElementById("tourText").textContent = text;
+  document.getElementById("tourCounter").textContent =
+    `${toFa(tourIndex + 1)} از ${toFa(activeTour.length)}`;
+  document.getElementById("tourDots").innerHTML = activeTour
+    .map(
+      (_, index) => `<i class="${index === tourIndex ? "is-active" : ""}"></i>`,
+    )
+    .join("");
+  document.getElementById("tourPrev").disabled = tourIndex === 0;
+  document.getElementById("tourNext").textContent =
+    tourIndex === activeTour.length - 1 ? "پایان" : "بعدی";
+}
+document.getElementById("explainPage").onclick = () => {
+  document.getElementById("supportDialog").close();
+  activeTour = tourContent[state.route] || tourContent.home;
+  tourIndex = 0;
+  const dialog = document.getElementById("tourDialog");
+  dialog.show();
+  showTourStep();
+};
+document.getElementById("tourPrev").onclick = () => {
+  if (tourIndex > 0) {
+    tourIndex -= 1;
+    showTourStep();
+  }
+};
+document.getElementById("tourNext").onclick = () => {
+  if (tourIndex >= activeTour.length - 1) closeTour();
+  else {
+    tourIndex += 1;
+    showTourStep();
+  }
+};
+document.getElementById("tourClose").onclick = closeTour;
 document.getElementById("setupForm").onsubmit = (e) => {
   e.preventDefault();
   localStorage.setItem(

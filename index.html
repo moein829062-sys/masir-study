@@ -180,6 +180,23 @@
       </button>
     </dialog>
 
+    <dialog id="tourDialog" class="tour-dialog" aria-labelledby="tourTitle">
+      <div class="tour-top">
+        <span id="tourCounter">۱ از ۴</span
+        ><button id="tourClose" aria-label="بستن راهنما">
+          <span data-icon="close"></span>
+        </button>
+      </div>
+      <div class="tour-icon"><span data-icon="spark"></span></div>
+      <h2 id="tourTitle">راهنمای این صفحه</h2>
+      <p id="tourText"></p>
+      <div class="tour-dots" id="tourDots"></div>
+      <div class="tour-actions">
+        <button id="tourPrev">قبلی</button
+        ><button id="tourNext" class="primary-button">بعدی</button>
+      </div>
+    </dialog>
+
     <script src="app.js"></script>
   </body>
 </html>

@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#10233f" />
+  <meta name="description" content="مسیر مطالعاتی مرحله‌به‌مرحله برای آمادگی آزمون‌های حقوقی" />
+  <title>مسیر — برنامه مطالعاتی حقوق</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%2310233f'/%3E%3Cpath d='M18 42c8-1 10-8 14-20 4 12 6 19 14 20' fill='none' stroke='%2388b6ff' stroke-width='6' stroke-linecap='round'/%3E%3Ccircle cx='32' cy='20' r='5' fill='%23fff'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="منوی اصلی">
+      <a class="brand" href="#" data-route="home" aria-label="صفحه اصلی مسیر">
+        <span class="brand-mark" aria-hidden="true"><i></i></span>
+        <span><strong>مسیر</strong><small>برنامه مطالعاتی حقوق</small></span>
+      </a>
+      <nav class="main-nav">
+        <button class="nav-item is-active" data-route="home"><span data-icon="home"></span>خانه</button>
+        <button class="nav-item" data-route="roadmap"><span data-icon="map"></span>نقشه راه</button>
+        <button class="nav-item" data-route="reviews"><span data-icon="repeat"></span>مرورهای امروز <b class="nav-badge">۳</b></button>
+        <button class="nav-item" data-route="progress"><span data-icon="chart"></span>گزارش پیشرفت</button>
+      </nav>
+      <div class="focus-card">
+        <div class="focus-ring" aria-label="۶۸ درصد پیشرفت"><span>۶۸٪</span></div>
+        <div><strong>ریتم خوبی داری</strong><small>این هفته ۴ ساعت جلوتر هستی</small></div>
+      </div>
+      <button class="profile-card"><span class="avatar">م</span><span><strong>معین</strong><small>داوطلب آزمون وکالت</small></span><span data-icon="more"></span></button>
+    </aside>
+
+    <main id="app" tabindex="-1"></main>
+
+    <nav class="mobile-nav" aria-label="منوی موبایل">
+      <button class="is-active" data-route="home"><span data-icon="home"></span><small>خانه</small></button>
+      <button data-route="roadmap"><span data-icon="map"></span><small>مسیر</small></button>
+      <button data-route="reviews" class="mobile-review"><span data-icon="repeat"></span><small>مرور</small><i>۳</i></button>
+      <button data-route="progress"><span data-icon="chart"></span><small>گزارش</small></button>
+    </nav>
+
+    <button class="support-fab" id="supportFab" aria-label="باز کردن پشتیبانی"><span data-icon="message"></span><em>پشتیبانی</em></button>
+  </div>
+
+  <dialog id="setupDialog" class="modal setup-modal">
+    <button class="icon-button modal-close" data-close="setupDialog" aria-label="بستن"><span data-icon="close"></span></button>
+    <div class="modal-symbol"><span data-icon="calendar"></span></div>
+    <p class="eyebrow">تنظیم برنامه شخصی</p>
+    <h2>برای کدام آزمون آماده می‌شوی؟</h2>
+    <p>تاریخ آزمون را وارد کن تا برنامه و شمارش معکوس اختصاصی تو ساخته شود.</p>
+    <form id="setupForm">
+      <label>دوره مطالعاتی<select id="courseInput" required><option value="وکالت ۱۴۰۵">آزمون وکالت ۱۴۰۵</option><option value="قضاوت ۱۴۰۵">آزمون قضاوت ۱۴۰۵</option><option value="ارشد حقوق">کارشناسی ارشد حقوق</option></select></label>
+      <label>تاریخ آزمون<input id="examDateInput" type="date" required /></label>
+      <button class="primary-button" type="submit">ساخت برنامه مطالعاتی <span data-icon="arrow"></span></button>
+    </form>
+  </dialog>
+
+  <dialog id="supportDialog" class="modal support-modal">
+    <div class="support-head"><div><span class="online-dot"></span><strong>همراه مسیر</strong><small>معمولاً فوری پاسخ می‌دهد</small></div><button class="icon-button" data-close="supportDialog" aria-label="بستن"><span data-icon="close"></span></button></div>
+    <div class="support-body" id="supportMessages"><div class="bot-message">سلام! من کنارتم. درباره همین صفحه سؤال داری یا می‌خواهی با پشتیبانی صحبت کنی؟</div></div>
+    <div class="quick-actions"><button id="explainPage"><span data-icon="spark"></span>این صفحه را توضیح بده</button><button><span data-icon="headset"></span>ارتباط با پشتیبان</button></div>
+    <form id="supportForm" class="chat-input"><input id="supportInput" placeholder="پیامت را بنویس…" aria-label="پیام پشتیبانی"><button aria-label="ارسال پیام"><span data-icon="send"></span></button></form>
+  </dialog>
+
+  <dialog id="reviewDialog" class="modal review-modal">
+    <div class="review-illustration"><span data-icon="repeat"></span></div>
+    <p class="eyebrow">مرور فاصله‌دار</p><h2>وقت تثبیت یادگیری است</h2>
+    <p>دیروز «اشخاص و محجورین» را خواندی. یک مرور ۸ دقیقه‌ای کمک می‌کند این مبحث در حافظه بلندمدت بماند.</p>
+    <div class="review-meta"><span><b>۸ دقیقه</b>زمان پیشنهادی</span><span><b>۱۲ تست</b>مرور سریع</span></div>
+    <button class="primary-button" data-action="start-review">شروع مرور</button>
+    <button class="text-button" data-close="reviewDialog">بعداً یادآوری کن</button>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>

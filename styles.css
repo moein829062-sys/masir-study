@@ -2360,3 +2360,30 @@ body[data-theme="dark"] .chapter-part.is-active {
   .chapter-reveal .subjects-grid { grid-template-columns:1fr; gap:10px; }
   .chapter-reveal .subject-card { min-height:0; padding:15px; }
 }
+
+/* Simplified header and chapter review gate */
+.topbar { padding:14px 16px; border:1px solid var(--line); border-radius:18px; background:var(--surface); }
+.topbar-title { display:flex; align-items:center; gap:12px; }
+.topbar-title h1,.topbar-title p { margin-right:0; }
+.top-page-navigation { flex-direction:row-reverse; }
+.chapter-gate-action { display:flex; align-items:center; justify-content:space-between; gap:18px; margin-top:14px; padding:20px; border:1px solid color-mix(in srgb,var(--green) 45%,var(--line)); border-radius:20px; background:color-mix(in srgb,var(--green) 8%,var(--surface)); }
+.chapter-gate-action strong { display:block; color:var(--ink); }
+.chapter-gate-action p { margin:4px 0 0; color:var(--muted); font-size:.78rem; }
+.chapter-gate-action button { display:flex; align-items:center; justify-content:center; gap:8px; white-space:nowrap; }
+.chapter-gate-action button svg { width:18px; }
+.chat-input { align-items:center; }
+.chat-input button { width:44px; height:44px; flex:0 0 44px; display:grid; place-items:center; padding:0; border-radius:13px; background:var(--blue); color:#fff; }
+.chat-input button span,.chat-input button svg { width:20px; height:20px; display:block; }
+.support-body { scroll-behavior:smooth; }
+
+@media (max-width:760px) {
+  .mobile-nav { justify-content:space-evenly; }
+  .mobile-nav button { max-width:33.333%; }
+  .chapter-gate-action { align-items:flex-start; flex-direction:column; padding:16px; }
+  .chapter-gate-action button { width:100%; }
+  .topbar { padding:12px; }
+  .topbar-title { gap:8px; min-width:0; }
+  .topbar-title > div:last-child { min-width:0; }
+  .topbar-title h1 { font-size:1.25rem; }
+  .topbar-title p { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+}

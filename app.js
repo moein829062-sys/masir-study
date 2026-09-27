@@ -110,18 +110,18 @@ function setActive(route) {
 }
 function header(title, subtitle) {
   const dark = document.body.dataset.theme === "dark";
-  return `<header class="topbar"><div><h1>${title}</h1><p>${subtitle}</p></div><div class="header-actions">${pageNavigation()}<button class="icon-button theme-toggle" data-theme-toggle aria-label="${dark ? "فعال‌کردن حالت روشن" : "فعال‌کردن حالت تاریک"}">${svg(dark ? "sun" : "moon")}</button><button class="icon-button menu-button" data-open-menu aria-label="بازکردن منو">${svg("menu")}<i></i></button></div></header>`;
+  return `<header class="topbar"><div class="topbar-title">${pageNavigation()}<div><h1>${title}</h1><p>${subtitle}</p></div></div><div class="header-actions"><button class="icon-button theme-toggle" data-theme-toggle aria-label="${dark ? "فعال‌کردن حالت روشن" : "فعال‌کردن حالت تاریک"}">${svg(dark ? "sun" : "moon")}</button><button class="icon-button menu-button" data-open-menu aria-label="بازکردن منو">${svg("menu")}<i></i></button></div></header>`;
 }
 function pageNavigation() {
-  const routes = ["home", "roadmap", "reviews", "progress"];
-  const labels = { home: "خانه", roadmap: "نقشه راه", reviews: "مرور روزانه", progress: "گزارش پیشرفت" };
+  const routes = ["home", "roadmap", "progress"];
+  const labels = { home: "خانه", roadmap: "نقشه راه", progress: "گزارش پیشرفت" };
   const route = state.route === "course" ? "roadmap" : state.route;
   const index = routes.indexOf(route);
   const previous = state.route === "course" ? "roadmap" : routes[index - 1];
-  const next = state.route === "course" ? "reviews" : routes[index + 1];
+  const next = state.route === "course" ? "progress" : routes[index + 1];
   const previousButton = `<button data-route="${previous || route}" ${previous ? "" : "disabled"} aria-label="صفحه قبلی" title="${previous ? labels[previous] : "قبلی"}">${svg("arrow")}</button>`;
   const nextButton = `<button data-route="${next || route}" ${next ? "" : "disabled"} aria-label="صفحه بعدی" title="${next ? labels[next] : "بعدی"}">${svg("arrow").replace("<svg", '<svg class="next-arrow"')}</button>`;
-  return `<nav class="top-page-navigation" aria-label="میانبر حرکت بین صفحه‌ها">${previousButton}${nextButton}</nav><nav class="bottom-page-navigation" aria-label="حرکت بین صفحه‌ها"><button data-route="${previous || route}" ${previous ? "" : "disabled"}>${svg("arrow")}<span>${previous ? labels[previous] : "قبلی"}</span></button><button data-route="${next || route}" ${next ? "" : "disabled"}><span>${next ? labels[next] : "بعدی"}</span>${svg("arrow").replace("<svg", '<svg class="next-arrow"')}</button></nav>`;
+  return `<nav class="top-page-navigation" aria-label="حرکت بین صفحه‌ها">${previousButton}${nextButton}</nav>`;
 }
 function svg(n) {
   return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icons[n]}</svg>`;
@@ -148,7 +148,7 @@ function homeView() {
   const t = countdown();
   const progress = overallProgress();
   return `<div class="page">${header("سلام معین، آماده‌ای؟", "امروز یک قدم کوچک، تو را به قبولی نزدیک‌تر می‌کند.")}
-<section class="hero-grid is-progress-banner"><article class="countdown-card"><div class="countdown-main"><div class="countdown-content"><div class="countdown-head"><div><small>زمان باقی‌مانده تا</small><strong>${c?.name || "آزمون وکالت ۱۴۰۵"}</strong></div><button class="countdown-edit" data-edit-time>${svg("clock")} تنظیم زمان</button></div><div class="countdown-time" id="countdown"><div class="time-unit"><b>${t[0]}</b><small>روز</small></div><div class="time-unit"><b>${t[1]}</b><small>ساعت</small></div><div class="time-unit"><b>${t[2]}</b><small>دقیقه</small></div><div class="time-unit"><b>${t[3]}</b><small>ثانیه</small></div></div><div class="countdown-foot">${svg("calendar")} ${c?.date ? `موعد: ${toFa(new Intl.DateTimeFormat("fa-IR", { dateStyle: "long", timeStyle: "short" }).format(new Date(`${c.date}T${c.time || "09:00"}:00`)))}` : "برنامه براساس زمان باقی‌مانده به‌روز می‌شود"}</div></div><div class="overall-ring" style="--overall:${progress * 3.6}deg"><div><strong>${toFa(progress)}٪</strong><small>پیشرفت کل</small></div></div></div></article></section>
+<section class="hero-grid is-progress-banner"><article class="countdown-card"><div class="countdown-main"><div class="countdown-content"><div class="countdown-head"><div><small>زمان باقی‌مانده تا</small><strong>${c?.name || "آزمون وکالت ۱۴۰۵"}</strong></div></div><div class="countdown-time" id="countdown"><div class="time-unit"><b>${t[0]}</b><small>روز</small></div><div class="time-unit"><b>${t[1]}</b><small>ساعت</small></div><div class="time-unit"><b>${t[2]}</b><small>دقیقه</small></div><div class="time-unit"><b>${t[3]}</b><small>ثانیه</small></div></div><div class="countdown-foot">${svg("calendar")} ${c?.date ? `موعد: ${toFa(new Intl.DateTimeFormat("fa-IR", { dateStyle: "long", timeStyle: "short" }).format(new Date(`${c.date}T${c.time || "09:00"}:00`)))}` : "برنامه براساس زمان باقی‌مانده به‌روز می‌شود"}</div></div><div class="overall-ring" style="--overall:${progress * 3.6}deg"><div><strong>${toFa(progress)}٪</strong><small>پیشرفت کل</small></div></div></div></article></section>
 ${dailyActivityLog()}
 <section class="daily-review-callout"><span class="daily-review-icon">${svg("repeat")}</span><div><small>مرور روزانه</small><h2>مطالب روزهای قبل را مرور کن تا یادت نرود</h2><p>مباحثی که زمان مرورشان رسیده، اینجا آماده‌اند.</p></div><button data-route="reviews">شروع مرور روزانه ${svg("arrow")}</button></section><div class="section-head"><div><h2>آماده مرور</h2><p>سه مبحث از مطالعه‌های روزهای قبل</p></div><button class="text-link" data-route="reviews">مشاهده همه</button></div>${reviewSuggestionCards()}</div>`;
 }
@@ -192,8 +192,10 @@ function subjectCards() {
 }
 function roadmapView() {
   const p = studyProgress();
+  const reviewDone = state.chapter && JSON.parse(localStorage.getItem("masirChapterReviews") || "[]").includes(state.chapter);
+  const needsReview = state.chapter && ![1, 6, 7, 12].includes(state.chapter) && !reviewDone;
   const selectedChapter = state.chapter
-    ? `<section class="chapter-reveal">${chapterEntryGuide()}<div class="section-head"><div><span class="eyebrow">ایستگاه انتخاب‌شده</span><h2>درس‌های ${chapterTitle(state.chapter)}</h2><p>یک درس را انتخاب کن تا مسیر مرور و قدم‌های آن باز شود</p></div></div><section class="subjects-grid">${subjectCards()}</section></section>`
+    ? `<section class="chapter-reveal">${chapterEntryGuide()}${needsReview ? `<div class="chapter-gate-action"><div><strong>برای ورود به ${chapterTitle(state.chapter)}</strong><p>ابتدا مرور ${chapterTitle(state.chapter - 1)} را کامل کن؛ سپس درس‌ها و قدم‌ها باز می‌شوند.</p></div><button class="primary-button" data-enter-chapter>${svg("repeat")} شروع مرور ${chapterTitle(state.chapter - 1)}</button></div>` : `<div class="section-head"><div><span class="eyebrow">ایستگاه انتخاب‌شده</span><h2>درس‌های ${chapterTitle(state.chapter)}</h2><p>یک درس را انتخاب کن تا قدم‌های آن باز شود</p></div></div><section class="subjects-grid">${subjectCards()}</section>`}</section>`
     : `<section class="chapter-placeholder">${svg("map")}<div><strong>یک فصل را انتخاب کن</strong><p>تا زمانی که فصل را انتخاب نکنی، درس‌ها و قدم‌های آن نمایش داده نمی‌شوند.</p></div></section>`;
   return `<div class="page">${header("نقشه راه مطالعه", "۱۰ فصل و دو ایستگاه مرور؛ فقط مرحله اکنون را دنبال کن.")}<div class="section-head"><div><h2>مسیر آمادگی آزمون</h2><p>${chapterTitle(p.unlocked)} فعال است · دو مرور نیمه‌جامع میان و پایان مسیر قرار دارند</p></div></div>${roadmap()}${selectedChapter}</div>`;
 }
@@ -360,6 +362,9 @@ function bindDynamic() {
         dialog.showModal();
       }),
   );
+  document.querySelectorAll("[data-enter-chapter]").forEach(
+    (b) => (b.onclick = () => { state.part = 1; state.subject = 0; state.reviewed = []; state.route = "course"; render(); }),
+  );
   document.querySelectorAll("[data-chapter]").forEach(
     (b) =>
       (b.onclick = () => {
@@ -448,6 +453,8 @@ function bindDynamic() {
           document.getElementById("examTimeInput").value =
             saved.time || "09:00";
         }
+        const menu = document.getElementById("menuDialog");
+        if (menu.open) menu.close();
         document.getElementById("setupDialog").showModal();
       }),
   );
@@ -493,6 +500,8 @@ document.getElementById("supportForm").onsubmit = (e) => {
       "beforeend",
       `<div class="user-message">${input.value.replace(/[<>]/g, "")}</div><div class="bot-message">پیامت ثبت شد. برای راهنمایی دقیق‌تر، نام درس یا قدم موردنظرت را هم بنویس.</div>`,
     );
+  const messages = document.getElementById("supportMessages");
+  messages.scrollTop = messages.scrollHeight;
   input.value = "";
 };
 const tourContent = {

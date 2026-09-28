@@ -119,4 +119,5 @@ dialog.menu-dialog{position:fixed;inset:0 0 0 auto;width:min(360px,92vw);height:
   dialog.menu-dialog{inset:0 0 0 auto;width:min(338px,90vw);height:100dvh;max-width:none;margin:0;padding:17px 14px;border-radius:22px 0 0 22px}
   .resources{padding:0 7px 8px}.resource-row{grid-template-columns:18px minmax(0,1fr)!important;min-height:100px}.resource-actions{grid-column:1/-1;width:100%}.resources .resource-actions button{flex:1;min-height:34px}
 }
+@media(max-width:760px){.route-line:before{display:none!important;background:none!important}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}

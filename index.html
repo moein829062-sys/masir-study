@@ -20,42 +20,10 @@
       type="image/svg+xml"
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%2310233f'/%3E%3Cpath d='M18 42c8-1 10-8 14-20 4 12 6 19 14 20' fill='none' stroke='%2388b6ff' stroke-width='6' stroke-linecap='round'/%3E%3Ccircle cx='32' cy='20' r='5' fill='%23fff'/%3E%3C/svg%3E"
     />
-    <link rel="stylesheet" href="styles.css?v=17" />
+    <link rel="stylesheet" href="styles.css?v=18" />
   </head>
   <body>
     <div class="app-shell">
-      <aside class="sidebar" aria-label="منوی اصلی">
-        <a class="brand" href="#" data-route="home" aria-label="صفحه اصلی مسیر">
-          <span class="brand-mark" aria-hidden="true"><i></i></span>
-          <span><strong>مسیر</strong><small>برنامه مطالعاتی حقوق</small></span>
-        </a>
-        <nav class="main-nav">
-          <button class="nav-item is-active" data-route="home">
-            <span data-icon="home"></span>خانه
-          </button>
-          <button class="nav-item" data-route="roadmap">
-            <span data-icon="map"></span>نقشه راه
-          </button>
-          <button class="nav-item" data-route="progress">
-            <span data-icon="chart"></span>گزارش پیشرفت
-          </button>
-        </nav>
-        <div class="focus-card">
-          <div class="focus-ring" aria-label="۶۸ درصد پیشرفت">
-            <span>۶۸٪</span>
-          </div>
-          <div>
-            <strong>ریتم خوبی داری</strong
-            ><small>این هفته ۴ ساعت جلوتر هستی</small>
-          </div>
-        </div>
-        <button class="profile-card">
-          <span class="avatar">م</span
-          ><span><strong>معین</strong><small>داوطلب آزمون وکالت</small></span
-          ><span data-icon="more"></span>
-        </button>
-      </aside>
-
       <main id="app" tabindex="-1"></main>
 
       <nav class="mobile-nav" aria-label="منوی موبایل">
@@ -90,9 +58,7 @@
       <div class="modal-symbol"><span data-icon="calendar"></span></div>
       <p class="eyebrow">تنظیم برنامه شخصی</p>
       <h2>برای کدام آزمون آماده می‌شوی؟</h2>
-      <p>
-        تاریخ آزمون را وارد کن تا برنامه و شمارش معکوس اختصاصی تو ساخته شود.
-      </p>
+      <p>دوره‌ات را انتخاب کن تا مسیر فصل‌ها، درس‌ها و میزان پیشرفت متناسب با آن نمایش داده شود.</p>
       <form id="setupForm">
         <label
           >دوره مطالعاتی<select id="courseInput" required>
@@ -101,18 +67,8 @@
             <option value="ارشد حقوق">کارشناسی ارشد حقوق</option>
           </select></label
         >
-        <label
-          >تاریخ آزمون<input id="examDateInput" type="date" required
-        /></label>
-        <label
-          >ساعت آزمون<input
-            id="examTimeInput"
-            type="time"
-            value="09:00"
-            required
-        /></label>
         <button class="primary-button" type="submit">
-          ساخت برنامه مطالعاتی <span data-icon="arrow"></span>
+          انتخاب دوره <span data-icon="arrow"></span>
         </button>
       </form>
     </dialog>
@@ -199,10 +155,11 @@
     <dialog id="menuDialog" class="modal menu-dialog" aria-labelledby="menuTitle">
       <div class="menu-dialog-head"><div><span class="eyebrow">منوی کاربری</span><h2 id="menuTitle">مسیر من</h2></div><button class="icon-button" data-close="menuDialog" aria-label="بستن"><span data-icon="close"></span></button></div>
       <div class="menu-profile"><span>م</span><div><strong>معین</strong><small>داوطلب آزمون وکالت</small></div></div>
-      <div class="menu-list"><button><span data-icon="bell"></span><div><strong>اعلان‌ها</strong><small>۳ یادآوری مطالعه</small></div><i>۳</i></button><button data-edit-time><span data-icon="clock"></span><div><strong>زمان آزمون</strong><small>تغییر تاریخ و ساعت شمارش معکوس</small></div></button><button data-theme-toggle><span data-icon="moon"></span><div><strong>ظاهر برنامه</strong><small>تغییر حالت روشن و تاریک</small></div></button><button><span data-icon="headset"></span><div><strong>پشتیبانی</strong><small>گفت‌وگو با همراه مسیر</small></div></button><button><span data-icon="more"></span><div><strong>تنظیمات</strong><small>حساب و ترجیحات مطالعه</small></div></button></div>
+      <div class="menu-list"><button><span data-icon="bell"></span><div><strong>اعلان‌ها</strong><small>۳ یادآوری مطالعه</small></div><i>۳</i></button><button data-edit-course><span data-icon="book"></span><div><strong>دوره مطالعاتی</strong><small>تغییر آزمون انتخاب‌شده</small></div></button><button data-theme-toggle><span data-icon="moon"></span><div><strong>ظاهر برنامه</strong><small>تغییر حالت روشن و تاریک</small></div></button><button><span data-icon="headset"></span><div><strong>پشتیبانی</strong><small>گفت‌وگو با همراه مسیر</small></div></button><button><span data-icon="more"></span><div><strong>تنظیمات</strong><small>حساب و ترجیحات مطالعه</small></div></button></div>
     </dialog>
     <div id="roadmapToast" class="roadmap-toast" role="status" aria-live="polite"></div>
 
-    <script src="app.js?v=17"></script>
+    <script src="audio-ducking.js?v=1"></script>
+    <script src="app.js?v=19"></script>
   </body>
 </html>

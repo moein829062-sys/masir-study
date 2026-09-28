@@ -54,6 +54,11 @@ dialog.menu-dialog{position:fixed;inset:0 0 0 auto;width:min(360px,92vw);height:
 .menu-primary button{min-height:76px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border:1px solid var(--line);border-radius:14px;background:#1d2939;color:#aeb9c9}.menu-primary button svg{width:20px}.menu-primary button small{font-size:.62rem}.menu-primary button:hover,.menu-primary button.is-active{border-color:#315fbd;background:#203a66;color:#9dbdff}
 .menu-list{gap:4px}.menu-list button{min-height:58px;padding:8px 7px;border:0;border-bottom:1px solid #293647;border-radius:0;background:transparent}.menu-list button:hover{background:#1d2938;border-radius:11px}.menu-list button>span:first-child{background:#213754}.menu-list button>span:last-child{margin-right:auto;background:none;color:#6f8098}.menu-list button>span:last-child svg{width:15px}.menu-list i{margin-right:auto}
 .menu-version{margin-top:22px;padding-top:13px;border-top:1px solid var(--line);color:#647186;text-align:center;font-size:.58rem}
+.resource-row{display:grid!important;grid-template-columns:20px minmax(0,1fr) auto;align-items:center;gap:9px}
+.resource-copy{min-width:0}.resource-copy strong,.resource-copy small{display:block}.resource-copy small{white-space:normal}
+.file-progress{display:block;overflow:hidden;width:100%;height:4px;margin-top:5px;border-radius:8px;background:#2d3a4d}.file-progress b{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--blue),#62a0ff);transition:width .25s var(--ease)}
+.resource-actions{display:flex;align-items:center;gap:5px}.resources .resource-actions button{min-height:32px;margin:0;padding:6px 9px;border:0;border-radius:8px;background:#28446e;color:#d7e6ff;font-size:.6rem;white-space:nowrap}.resources .resource-actions .skip{background:transparent;border:1px solid #43526a;color:#aab6c7}.resources .resource-actions .watch{background:var(--blue);color:#fff}.resources .resource-actions button svg{width:14px;height:14px;vertical-align:middle}
+.mini-progress small{display:block;margin-top:5px;color:var(--muted);font-size:.56rem}
 
 @media(max-width:760px){
   .roadmap-board{padding:12px 10px 14px;border-radius:18px}
@@ -75,5 +80,6 @@ dialog.menu-dialog{position:fixed;inset:0 0 0 auto;width:min(360px,92vw);height:
   .route-node:nth-child(10){grid-area:4/1}.route-node:nth-child(11){grid-area:4/2}.route-node:nth-child(12){grid-area:4/3}
   .route-line:before{inset:0 4px 28px;background-size:100% 390px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 390' preserveAspectRatio='none'%3E%3Cpath d='M260 31H40Q24 31 24 47V115Q24 131 40 131H260Q276 131 276 147V215Q276 231 260 231H40Q24 231 24 247V315Q24 331 40 331H260' fill='none' stroke='%2337475d' stroke-width='2' stroke-linecap='round' stroke-dasharray='5 7'/%3E%3C/svg%3E")}
   dialog.menu-dialog{inset:0 0 0 auto;width:min(338px,90vw);height:100dvh;max-width:none;margin:0;padding:17px 14px;border-radius:22px 0 0 22px}
+  .resources{padding-right:42px}.resource-row{grid-template-columns:18px minmax(0,1fr)}.resource-actions{grid-column:1/-1;width:100%}.resources .resource-actions button{flex:1;min-height:34px}
 }
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}

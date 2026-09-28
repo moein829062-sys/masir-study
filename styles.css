@@ -60,6 +60,25 @@ dialog.menu-dialog{position:fixed;inset:0 0 0 auto;width:min(360px,92vw);height:
 .resource-actions{display:flex;align-items:center;gap:5px}.resources .resource-actions button{min-height:32px;margin:0;padding:6px 9px;border:0;border-radius:8px;background:#28446e;color:#d7e6ff;font-size:.6rem;white-space:nowrap}.resources .resource-actions .skip{background:transparent;border:1px solid #43526a;color:#aab6c7}.resources .resource-actions .watch{background:var(--blue);color:#fff}.resources .resource-actions button svg{width:14px;height:14px;vertical-align:middle}
 .mini-progress small{display:block;margin-top:5px;color:var(--muted);font-size:.56rem}
 
+/* Resource cards share one internal geometry; actions no longer stretch the middle column. */
+.resources{align-items:stretch}
+.resource-row{grid-template-columns:20px minmax(0,1fr)!important;grid-template-rows:auto auto;align-content:start;min-height:104px;padding:11px!important}
+.resource-row>svg{align-self:start;margin-top:2px}
+.resource-actions{grid-column:1/-1;width:100%;margin-top:2px}
+.resources .resource-actions button{flex:1;min-height:36px}
+
+/* Minimal roadmap: a straight reading axis, with no angled segment crossing a chapter card. */
+.route-node:after{display:none!important}
+@media(min-width:761px){
+  .route-line{grid-template-columns:repeat(6,minmax(0,1fr));gap:18px 10px;padding:18px 2px 8px}
+  .route-line:before{display:block;inset:42px 4.2% auto;height:150px;background-image:linear-gradient(90deg,#2f4056,#3e5571),linear-gradient(90deg,#2f4056,#3e5571);background-repeat:no-repeat;background-size:100% 2px;background-position:center 0,center 146px}
+  .route-node:nth-child(n){grid-area:auto;min-height:128px;padding:7px 5px;background:transparent;border-color:transparent}
+  .route-node.is-current{border-color:rgba(81,130,255,.48);background:#192b49}
+  .route-node.is-review{border-color:rgba(138,99,232,.35);background:#25233d}
+  .route-node .node-dot{width:46px;height:46px;border-width:5px}
+  .node-copy strong{font-size:.8rem}.node-copy small{max-width:120px;min-height:32px;font-size:.62rem}
+}
+
 /* Desktop breathing room: wider canvas and a modest scale lift, without turning the dashboard bulky. */
 @media(min-width:1000px){
   body{font-size:17px}
@@ -68,7 +87,7 @@ dialog.menu-dialog{position:fixed;inset:0 0 0 auto;width:min(360px,92vw);height:
   .topbar h1{font-size:1.32rem}.topbar p{font-size:.8rem}
   .course-hero{min-height:248px;padding:38px 48px}.course-copy h2{font-size:2.15rem}.progress-orbit{width:150px;height:150px}
   .review-grid{gap:16px}.review-card{padding:16px}
-  .roadmap-board{padding:28px 30px}.route-line{gap:22px 16px}.route-node{min-height:122px}.node-copy strong{font-size:.84rem}.node-copy small{font-size:.65rem}
+  .roadmap-board{padding:28px 30px}.route-line{gap:18px 12px}.route-node{min-height:128px}.node-copy strong{font-size:.8rem}.node-copy small{font-size:.62rem}
   .chapter-status{padding:25px 28px}.chapter-status h2{font-size:1.48rem}
   .learning-workspace{grid-template-columns:320px minmax(0,1fr);gap:18px}.subject-picker,.lesson-panel{padding:18px}.subject-chip{min-height:56px}.step>button{min-height:60px}
   .progress-list{gap:11px}.progress-list article{padding:15px}
@@ -92,8 +111,9 @@ dialog.menu-dialog{position:fixed;inset:0 0 0 auto;width:min(360px,92vw);height:
   .route-node:nth-child(4){grid-area:2/1}.route-node:nth-child(5){grid-area:2/2}.route-node:nth-child(6){grid-area:2/3}
   .route-node:nth-child(7){grid-area:3/3}.route-node:nth-child(8){grid-area:3/2}.route-node:nth-child(9){grid-area:3/1}
   .route-node:nth-child(10){grid-area:4/1}.route-node:nth-child(11){grid-area:4/2}.route-node:nth-child(12){grid-area:4/3}
-  .route-line:before{inset:0 4px 28px;background-size:100% 390px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 390' preserveAspectRatio='none'%3E%3Cpath d='M260 31H40Q24 31 24 47V115Q24 131 40 131H260Q276 131 276 147V215Q276 231 260 231H40Q24 231 24 247V315Q24 331 40 331H260' fill='none' stroke='%2337475d' stroke-width='2' stroke-linecap='round' stroke-dasharray='5 7'/%3E%3C/svg%3E")}
+  .route-line:before{inset:28px 5% auto;height:calc(100% - 50px);background-image:linear-gradient(#37475d,#37475d),linear-gradient(#37475d,#37475d),linear-gradient(#37475d,#37475d),linear-gradient(#37475d,#37475d);background-repeat:no-repeat;background-size:100% 2px;background-position:center 0,center 100px,center 200px,center 300px}
+  .route-node:nth-child(n){grid-area:auto;direction:rtl}
   dialog.menu-dialog{inset:0 0 0 auto;width:min(338px,90vw);height:100dvh;max-width:none;margin:0;padding:17px 14px;border-radius:22px 0 0 22px}
-  .resources{padding-right:42px}.resource-row{grid-template-columns:18px minmax(0,1fr)}.resource-actions{grid-column:1/-1;width:100%}.resources .resource-actions button{flex:1;min-height:34px}
+  .resources{padding-right:42px}.resource-row{grid-template-columns:18px minmax(0,1fr)!important;min-height:100px}.resource-actions{grid-column:1/-1;width:100%}.resources .resource-actions button{flex:1;min-height:34px}
 }
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}

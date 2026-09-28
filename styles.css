@@ -59,6 +59,7 @@ dialog.menu-dialog{position:fixed;inset:0 0 0 auto;width:min(360px,92vw);height:
 .file-progress{display:block;overflow:hidden;width:100%;height:4px;margin-top:5px;border-radius:8px;background:#2d3a4d}.file-progress b{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--blue),#62a0ff);transition:width .25s var(--ease)}
 .resource-actions{display:flex;align-items:center;gap:5px}.resources .resource-actions button{min-height:32px;margin:0;padding:6px 9px;border:0;border-radius:8px;background:#28446e;color:#d7e6ff;font-size:.6rem;white-space:nowrap}.resources .resource-actions .skip{background:transparent;border:1px solid #43526a;color:#aab6c7}.resources .resource-actions .watch{background:var(--blue);color:#fff}.resources .resource-actions button svg{width:14px;height:14px;vertical-align:middle}
 .mini-progress small{display:block;margin-top:5px;color:var(--muted);font-size:.56rem}
+.subject-ring{position:relative;width:38px;height:38px;display:grid!important;place-items:center;border-radius:50%;background:conic-gradient(var(--blue) var(--p),#344257 0);color:#dce7fb!important;font-size:.54rem!important;font-variant-numeric:tabular-nums}.subject-ring:before{content:"";position:absolute;inset:4px;border-radius:50%;background:#202b3a}.subject-ring b{position:relative;z-index:1;font-weight:800}.subject-chip.is-active .subject-ring{background:conic-gradient(#8fb4ff var(--p),rgba(255,255,255,.18) 0)}.subject-chip.is-active .subject-ring:before{background:#1c3153}body[data-theme='light'] .subject-ring:before{background:#f7f9fc}body[data-theme='light'] .subject-chip.is-active .subject-ring:before{background:#eaf1ff}
 
 /* Resource cards share one internal geometry; actions no longer stretch the middle column. */
 .resources{align-items:stretch;padding:0 10px 10px}
@@ -117,7 +118,7 @@ dialog.menu-dialog{position:fixed;inset:0 0 0 auto;width:min(360px,92vw);height:
   .route-line:before{inset:28px 5% auto;height:calc(100% - 50px);background-image:linear-gradient(#37475d,#37475d),linear-gradient(#37475d,#37475d),linear-gradient(#37475d,#37475d),linear-gradient(#37475d,#37475d);background-repeat:no-repeat;background-size:100% 2px;background-position:center 0,center 100px,center 200px,center 300px}
   .route-node:nth-child(n){grid-area:auto;direction:rtl}
   dialog.menu-dialog{inset:0 0 0 auto;width:min(338px,90vw);height:100dvh;max-width:none;margin:0;padding:17px 14px;border-radius:22px 0 0 22px}
-  .resources{padding:0 7px 8px}.resource-row{grid-template-columns:18px minmax(0,1fr)!important;min-height:100px}.resource-actions{grid-column:1/-1;width:100%}.resources .resource-actions button{flex:1;min-height:34px}
+  .resources{padding:0 7px 8px}.resource-row{grid-template-columns:18px minmax(0,1fr)!important;min-height:100px}.resource-actions{grid-column:1/-1;width:100%}.resources .resource-actions button{flex:1;min-height:34px}.subject-ring{width:34px;height:34px;font-size:.49rem!important}.subject-ring:before{inset:3px}
 }
 @media(max-width:760px){.route-line:before{display:none!important;background:none!important}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}

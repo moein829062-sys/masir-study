@@ -43,7 +43,9 @@ document.getElementById('setupForm').onsubmit=e=>{e.preventDefault();localStorag
 document.querySelectorAll('[data-edit-course]').forEach(b=>b.onclick=()=>{document.getElementById('menuDialog').close();document.getElementById('setupDialog').showModal()});
 document.querySelectorAll('[data-theme-toggle]').forEach(b=>b.onclick=()=>{document.body.dataset.theme=document.body.dataset.theme==='light'?'dark':'light';localStorage.setItem('masirTheme',document.body.dataset.theme);render()});
 document.getElementById('explainPage').onclick=()=>{document.getElementById('supportDialog').close();toast('راهنمای همین صفحه فعال شد؛ مرحله فعلی با نور آبی مشخص است.')};
-const audioDucking=new AudioDuckingController({navigator,window});
-document.querySelectorAll('audio[data-assistant-audio]').forEach(element=>audioDucking.trackMediaElement(element));
-window.assistantAudioDucking={begin:()=>audioDucking.start(),track:element=>audioDucking.trackMediaElement(element),trackUtterance:utterance=>audioDucking.trackSpeechUtterance(utterance),stop:reason=>audioDucking.stopAll(reason||'cancelled'),get active(){return audioDucking.active},get mode(){return audioDucking.mode}};
+if(typeof AudioDuckingController!=='undefined'){
+  const audioDucking=new AudioDuckingController({navigator,window});
+  document.querySelectorAll('audio[data-assistant-audio]').forEach(element=>audioDucking.trackMediaElement(element));
+  window.assistantAudioDucking={begin:()=>audioDucking.start(),track:element=>audioDucking.trackMediaElement(element),trackUtterance:utterance=>audioDucking.trackSpeechUtterance(utterance),stop:reason=>audioDucking.stopAll(reason||'cancelled'),get active(){return audioDucking.active},get mode(){return audioDucking.mode}};
+}
 document.body.dataset.theme=localStorage.getItem('masirTheme')||'dark';render();if(!localStorage.getItem('masirCourse')&&!new URLSearchParams(location.search).has('preview'))setTimeout(()=>document.getElementById('setupDialog').showModal(),400);
